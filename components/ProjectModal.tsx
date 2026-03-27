@@ -1,0 +1,213 @@
+"use client";
+
+import { useEffect, useCallback, useState } from "react";
+import type { Project } from "@/lib/projects";
+
+export default function ProjectModal({
+  project: initialProject,
+  allProjects,
+  initialIndex,
+  onClose,
+}: {
+  project: Project;
+  allProjects: Project[];
+  initialIndex: number;
+  onClose: () => void;
+}) {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const project = allProjects[currentIndex];
+
+  const handleKey = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight" && currentIndex < allProjects.length - 1)
+        setCurrentIndex((i) => i + 1);
+      if (e.key === "ArrowLeft" && currentIndex > 0)
+        setCurrentIndex((i) => i - 1);
+    },
+    [onClose, currentIndex, allProjects.length]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+    };
+  }, [handleKey]);
+
+  const hasDemo = project.demoUrl && project.demoUrl !== "#";
+  const hasGithub = project.githubUrl && project.githubUrl !== "#";
+
+  return (
+    <div
+      style={{
+        display: "flex", position: "fixed", inset: 0,
+        background: "rgba(0,0,0,0.55)", zIndex: 200,
+        alignItems: "center", justifyContent: "center", padding: 24,
+      }}
+      onClick={onClose}
+    >
+      <div
+        style={{
+          background: "var(--color-white)", borderRadius: 12,
+          maxWidth: 900, width: "100%", maxHeight: "90vh",
+          overflowY: "auto", position: "relative",
+          boxShadow: "0 16px 64px rgba(0,0,0,0.25)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Sticky header */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "24px 32px", borderBottom: "1px solid var(--color-border)",
+          position: "sticky", top: 0, background: "var(--color-white)", zIndex: 1,
+        }}>
+          <h2 style={{ fontSize: 20 }}>Project Details</h2>
+          <button
+            onClick={onClose}
+            style={{
+              width: 36, height: 36, background: "var(--color-light-gray)",
+              border: "none", borderRadius: "50%", fontSize: 18, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              transition: "background 0.15s",
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-border)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-light-gray)"; }}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Body: gallery + details */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, padding: 32 }}
+          className="modal-body-grid">
+          {/* Gallery */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{
+              width: "100%", aspectRatio: "16/10", borderRadius: 8,
+              background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
+              borderTop: `4px solid ${project.color}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
+                {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
+              </span>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              {[0, 1, 2].map((i) => (
+                <div key={i} style={{
+                  width: 56, height: 40, borderRadius: 4,
+                  border: i === 0 ? `2px solid var(--color-accent)` : "2px solid var(--color-border)",
+                  background: "var(--color-light-gray)", cursor: "pointer",
+                }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Details */}
+          <div>
+            <h2 style={{ fontSize: 24, marginBottom: 16 }}>{project.title}</h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 24 }}>
+              {project.tech.map((t) => (
+                <span key={t} style={{
+                  fontSize: 12, fontWeight: 500, fontFamily: "'Courier New', monospace",
+                  background: "var(--color-light-gray)", color: "var(--color-primary)",
+                  border: "1px solid var(--color-border)", padding: "2px 8px", borderRadius: 4,
+                }}>
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--color-text)" }}>
+                {project.shortDescription}
+              </p>
+            </div>
+
+            {[
+              { label: "The problem", text: project.problem },
+              { label: "Approach", text: project.approach },
+              { label: "My role", text: project.role },
+            ].map(({ label, text }) => (
+              <div key={label} style={{ marginBottom: 16 }}>
+                <h4 style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.8px", color: "var(--color-gray-text)", marginBottom: 4 }}>
+                  {label}
+                </h4>
+                <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--color-text)" }}>{text}</p>
+              </div>
+            ))}
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+              {hasDemo && (
+                <a href={project.demoUrl!} target="_blank" rel="noopener noreferrer"
+                  style={{
+                    height: 48, padding: "0 24px", background: "var(--color-accent)", color: "#fff",
+                    border: "none", borderRadius: 6, fontSize: 16, fontWeight: 500,
+                    display: "inline-flex", alignItems: "center", textDecoration: "none", cursor: "pointer",
+                  }}>
+                  Live Demo
+                </a>
+              )}
+              {hasGithub && (
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
+                  style={{
+                    height: 48, padding: "0 20px", background: "transparent",
+                    color: "var(--color-accent)", border: "1.5px solid var(--color-accent)",
+                    borderRadius: 6, fontSize: 16, fontWeight: 500,
+                    display: "inline-flex", alignItems: "center", textDecoration: "none",
+                  }}>
+                  GitHub
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div style={{
+          display: "flex", justifyContent: "space-between",
+          padding: "24px 32px", borderTop: "1px solid var(--color-border)",
+        }}>
+          <button
+            onClick={() => setCurrentIndex((i) => i - 1)}
+            disabled={currentIndex === 0}
+            style={{
+              background: "none", border: "1.5px solid var(--color-border)",
+              borderRadius: 6, padding: "0 16px", height: 40, cursor: "pointer",
+              fontSize: 14, fontWeight: 500, color: "var(--color-text)",
+              display: "flex", alignItems: "center", gap: 6,
+              fontFamily: "inherit",
+              opacity: currentIndex === 0 ? 0.3 : 1,
+            }}
+          >
+            ← Previous
+          </button>
+          <button
+            onClick={() => setCurrentIndex((i) => i + 1)}
+            disabled={currentIndex === allProjects.length - 1}
+            style={{
+              background: "none", border: "1.5px solid var(--color-border)",
+              borderRadius: 6, padding: "0 16px", height: 40, cursor: "pointer",
+              fontSize: 14, fontWeight: 500, color: "var(--color-text)",
+              display: "flex", alignItems: "center", gap: 6,
+              fontFamily: "inherit",
+              opacity: currentIndex === allProjects.length - 1 ? 0.3 : 1,
+            }}
+          >
+            Next →
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .modal-body-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+    </div>
+  );
+}
