@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { BlogPost } from "@/lib/blog";
-import { formatDate, displayName } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { displayName } from "@/lib/users";
 
 /* Blog post preview card — styles live in globals.css (.blog-card*) */
 export default function BlogPostCard({ post }: { post: BlogPost }) {

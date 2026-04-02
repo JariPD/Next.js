@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { inputStyle } from "@/lib/styles";
 
 export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
   const [title, setTitle] = useState("");
@@ -65,22 +64,15 @@ export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
           <label style={{ fontSize: 14, fontWeight: 500 }}>Title</label>
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
-            placeholder="Give your post a title" style={inputStyle}
-            onFocus={(e) => { e.currentTarget.style.borderColor = "var(--color-accent)"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(49,130,206,0.15)"; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = "var(--color-border)"; e.currentTarget.style.boxShadow = "none"; }}
+            placeholder="Give your post a title" className="input"
           />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 24 }}>
           <label style={{ fontSize: 14, fontWeight: 500 }}>Content</label>
           <textarea value={content} onChange={(e) => setContent(e.target.value)}
             placeholder="Write your post here…"
-            style={{
-              border: "1.5px solid var(--color-border)", borderRadius: 6, padding: 12,
-              fontSize: 16, fontFamily: "inherit", color: "var(--color-text)", background: "var(--color-white)",
-              outline: "none", width: "100%", height: 200, resize: "vertical", transition: "border-color 0.15s",
-            }}
-            onFocus={(e) => { e.currentTarget.style.borderColor = "var(--color-accent)"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(49,130,206,0.15)"; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = "var(--color-border)"; e.currentTarget.style.boxShadow = "none"; }}
+            className="input"
+            style={{ height: 200, resize: "vertical", padding: 12 }}
           />
         </div>
         <p style={{ fontSize: 13, color: "var(--color-gray-text)", marginBottom: 16 }}>

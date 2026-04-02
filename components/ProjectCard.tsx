@@ -40,7 +40,6 @@ export default function ProjectCard({ project, index, allProjects }: {
 
       {open && (
         <ProjectModal
-          project={project}
           allProjects={allProjects}
           initialIndex={index}
           onClose={() => setOpen(false)}

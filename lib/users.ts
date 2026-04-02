@@ -18,3 +18,8 @@ function readUsers(): User[] {
 export function getUserByEmail(email: string): User | undefined {
   return readUsers().find((u) => u.email === email);
 }
+
+export function displayName(email: string): string {
+  const user = getUserByEmail(email);
+  return user?.name ?? email.split("@")[0];
+}

@@ -1,13 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { auth } from "@/auth";
 import { getPublishedPosts } from "@/lib/blog";
 import BlogPostCard from "@/components/BlogPostCard";
 import Button from "@/components/Button";
 import RevealInit from "@/components/RevealInit";
 import { container, section } from "@/lib/styles";
 
-export default async function BlogPage() {
-  const session = await auth();
+export const metadata: Metadata = {
+  title: "Blog — Jari Dijk",
+  description: "Technical articles and insights from my day-to-day work as a developer.",
+};
+
+export default function BlogPage() {
   const posts = getPublishedPosts();
 
   return (
@@ -27,12 +31,7 @@ export default async function BlogPage() {
                 Technical articles and insights from my day-to-day work as a developer.
               </p>
             </div>
-            {/* Write a post (logged in) or prompt to sign in */}
-            {session?.user ? (
-              <Button variant="primary" href="/blog/new">Write a post</Button>
-            ) : (
-              <Button variant="secondary" href="/login">Sign in to write</Button>
-            )}
+            <Button variant="primary" href="/blog/new">Write a post</Button>
           </div>
         </div>
 

@@ -5,12 +5,10 @@ import type { Project } from "@/lib/projects";
 import { formatProjectDate } from "@/lib/format";
 
 export default function ProjectModal({
-  project: initialProject,
   allProjects,
   initialIndex,
   onClose,
 }: {
-  project: Project;
   allProjects: Project[];
   initialIndex: number;
   onClose: () => void;
@@ -149,15 +147,9 @@ export default function ProjectModal({
             <p style={{ fontSize: 13, color: "var(--color-gray-text)", marginBottom: 16 }}>
               {formatProjectDate(project.year, project.month)}
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 24 }}>
+            <div className="tag-list" style={{ marginBottom: 24 }}>
               {project.tech.map((t) => (
-                <span key={t} style={{
-                  fontSize: 12, fontWeight: 500, fontFamily: "'Courier New', monospace",
-                  background: "var(--color-light-gray)", color: "var(--color-primary)",
-                  border: "1px solid var(--color-border)", padding: "2px 8px", borderRadius: 4,
-                }}>
-                  {t}
-                </span>
+                <span key={t} className="tag">{t}</span>
               ))}
             </div>
 

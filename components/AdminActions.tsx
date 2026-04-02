@@ -34,30 +34,50 @@ export default function AdminActions({
     }
   }
 
+  async function handleDelete() {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/blog/posts/${postId}`, { method: "DELETE" });
+      if (!res.ok) {
+        setError("Failed to delete post.");
+        return;
+      }
+      router.refresh();
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div>
       {error && (
         <p style={{ fontSize: 13, color: "var(--color-error)", marginBottom: 6 }}>{error}</p>
       )}
       <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-      {currentStatus !== "published" && (
-        <button onClick={() => setStatus("published")} disabled={loading}
-          className="btn-success" style={{ opacity: loading ? 0.4 : 1 }}>
-          Approve
+        {currentStatus !== "published" && (
+          <button onClick={() => setStatus("published")} disabled={loading}
+            className="btn-success" style={{ opacity: loading ? 0.4 : 1 }}>
+            Approve
+          </button>
+        )}
+        {currentStatus !== "rejected" && (
+          <button onClick={() => setStatus("rejected")} disabled={loading}
+            className="btn-danger" style={{ opacity: loading ? 0.4 : 1 }}>
+            Reject
+          </button>
+        )}
+        {currentStatus !== "pending" && (
+          <button onClick={() => setStatus("pending")} disabled={loading}
+            className="btn-outline" style={{ opacity: loading ? 0.4 : 1 }}>
+            Set Pending
+          </button>
+        )}
+        <button onClick={handleDelete} disabled={loading}
+          className="btn-outline" style={{ opacity: loading ? 0.4 : 1, color: "var(--color-error)", borderColor: "var(--color-error)" }}>
+          Delete
         </button>
-      )}
-      {currentStatus !== "rejected" && (
-        <button onClick={() => setStatus("rejected")} disabled={loading}
-          className="btn-danger" style={{ opacity: loading ? 0.4 : 1 }}>
-          Reject
-        </button>
-      )}
-      {currentStatus !== "pending" && (
-        <button onClick={() => setStatus("pending")} disabled={loading}
-          className="btn-outline" style={{ opacity: loading ? 0.4 : 1 }}>
-          Set Pending
-        </button>
-      )}
       </div>
     </div>
   );

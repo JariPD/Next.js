@@ -1,6 +1,6 @@
+import Link from "next/link";
 import { getAllProjects } from "@/lib/projects";
 import { getPublishedPosts } from "@/lib/blog";
-import { auth } from "@/auth";
 import ProjectCard from "@/components/ProjectCard";
 import BlogPostCard from "@/components/BlogPostCard";
 import Button from "@/components/Button";
@@ -10,10 +10,9 @@ import RevealInit from "@/components/RevealInit";
 import ContactLinks from "@/components/ContactLinks";
 import { container, section as sec } from "@/lib/styles";
 
-export default async function Home() {
+export default function Home() {
   const projects = getAllProjects();
   const publishedPosts = getPublishedPosts();
-  const session = await auth();
 
   return (
     <main>
@@ -37,8 +36,8 @@ export default async function Home() {
                 ))}
               </div>
               <div className="hero-ctas" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                <a href="#projects" className="btn-primary">View projects</a>
-                <a href="#contact" className="btn-secondary">Get in touch</a>
+                <Link href="#projects" className="btn-primary">View projects</Link>
+                <Link href="#contact" className="btn-secondary">Get in touch</Link>
               </div>
             </div>
             <div className="hero-photo" aria-hidden="true">JD</div>
@@ -154,7 +153,7 @@ export default async function Home() {
               <h2>Blog</h2>
               <p className="text-gray">Technical articles and insights from my day-to-day work as a developer.</p>
             </div>
-            <Button variant="secondary" href={session?.user ? "/blog/new" : "/login"}>Write a post</Button>
+            <Button variant="secondary" href="/blog/new">Write a post</Button>
           </div>
           {publishedPosts.length > 0 ? (
             <div className="blog-grid">

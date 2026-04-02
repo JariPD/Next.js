@@ -13,8 +13,3 @@ export function formatProjectDate(year: number, month: number): string {
   return `${MONTHS[month - 1]} ${year}`;
 }
 
-export function displayName(email: string): string {
-  if (email === "jari@email.nl") return "Jari Dijk";
-  if (email === "user@email.nl") return "Demo User";
-  return email.split("@")[0];
-}

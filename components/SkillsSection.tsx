@@ -1,9 +1,4 @@
-/* Skills data organized by category, matching the prototype */
-const skills: Record<string, string[]> = {
-  Frontend:       ["Blazor", "MudBlazor", "ApexCharts", "Leaflet", "HTML/CSS", "Tailwind"],
-  Backend:        ["C#", ".Net", "MongoDB", "REST API"],
-  "Tools & DevOps": ["Docker", "Git", "GitHub Pages", "Netlify", "Figma"],
-};
+import skills from "@/data/skills.json";
 
 export default function SkillsSection() {
   return (
