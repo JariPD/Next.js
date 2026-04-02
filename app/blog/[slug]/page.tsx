@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { getPublishedPosts, getPostBySlug } from "@/lib/blog";
 import StatusBadge from "@/components/StatusBadge";
-import { formatDate, displayName } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { displayName } from "@/lib/users";
 import { container } from "@/lib/styles";
 
 export const revalidate = 60;
@@ -55,7 +56,7 @@ export default async function BlogPostPage({
           <nav className="post-breadcrumb">
             <Link href="/" className="breadcrumb-link">Home</Link>
             <span style={{ margin: "0 8px" }}>/</span>
-            <Link href="/blog" className="breadcrumb-link">Blog</Link>
+            <Link href="/#blog" className="breadcrumb-link">Blog</Link>
             <span style={{ margin: "0 8px" }}>/</span>
             <span>{post.title}</span>
           </nav>
@@ -110,7 +111,7 @@ export default async function BlogPostPage({
 
           {/* Footer nav: back button left, written-by right — matches prototype */}
           <div className="post-footer-nav">
-            <Link href="/blog" className="btn-secondary">← Back to blog</Link>
+            <Link href="/#blog" className="btn-secondary">← Back to blog</Link>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span className="text-small">Written by</span>
               <strong style={{ fontSize: 14 }}>{name}</strong>
