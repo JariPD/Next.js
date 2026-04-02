@@ -57,9 +57,6 @@ export default function ContactLinks() {
           </a>
         ))}
       </div>
-      <style>{`
-        .contact-link:hover { color: var(--color-accent) !important; text-decoration: none; }
-      `}</style>
     </div>
   );
 }

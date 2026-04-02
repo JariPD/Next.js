@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback, useState } from "react";
 import type { Project } from "@/lib/projects";
+import { formatProjectDate } from "@/lib/format";
 
 export default function ProjectModal({
   project: initialProject,
@@ -64,7 +65,43 @@ export default function ProjectModal({
           padding: "24px 32px", borderBottom: "1px solid var(--color-border)",
           position: "sticky", top: 0, background: "var(--color-white)", zIndex: 1,
         }}>
-          <h2 style={{ fontSize: 20 }}>Project Details</h2>
+          {/* Navigation: prev / counter / next */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              onClick={() => setCurrentIndex((i) => i - 1)}
+              disabled={currentIndex === 0}
+              aria-label="Previous project"
+              style={{
+                width: 32, height: 32, borderRadius: "50%", border: "1px solid var(--color-border)",
+                background: "var(--color-light-gray)", cursor: "pointer", fontSize: 14,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: currentIndex === 0 ? 0.3 : 1, transition: "background 0.15s",
+              }}
+              onMouseEnter={(e) => { if (currentIndex > 0) (e.currentTarget as HTMLButtonElement).style.background = "var(--color-border)"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-light-gray)"; }}
+            >
+              ←
+            </button>
+            <span style={{ fontSize: 13, color: "var(--color-gray-text)", minWidth: 40, textAlign: "center" }}>
+              {currentIndex + 1} / {allProjects.length}
+            </span>
+            <button
+              onClick={() => setCurrentIndex((i) => i + 1)}
+              disabled={currentIndex === allProjects.length - 1}
+              aria-label="Next project"
+              style={{
+                width: 32, height: 32, borderRadius: "50%", border: "1px solid var(--color-border)",
+                background: "var(--color-light-gray)", cursor: "pointer", fontSize: 14,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: currentIndex === allProjects.length - 1 ? 0.3 : 1, transition: "background 0.15s",
+              }}
+              onMouseEnter={(e) => { if (currentIndex < allProjects.length - 1) (e.currentTarget as HTMLButtonElement).style.background = "var(--color-border)"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-light-gray)"; }}
+            >
+              →
+            </button>
+          </div>
+          
           <button
             onClick={onClose}
             style={{
@@ -82,8 +119,7 @@ export default function ProjectModal({
         </div>
 
         {/* Body: gallery + details */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, padding: 32 }}
-          className="modal-body-grid">
+        <div className="modal-body-grid">
           {/* Gallery */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{
@@ -109,7 +145,10 @@ export default function ProjectModal({
 
           {/* Details */}
           <div>
-            <h2 style={{ fontSize: 24, marginBottom: 16 }}>{project.title}</h2>
+            <h2 style={{ fontSize: 24, marginBottom: 4 }}>{project.title}</h2>
+            <p style={{ fontSize: 13, color: "var(--color-gray-text)", marginBottom: 16 }}>
+              {formatProjectDate(project.year, project.month)}
+            </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 24 }}>
               {project.tech.map((t) => (
                 <span key={t} style={{
@@ -143,71 +182,20 @@ export default function ProjectModal({
 
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
               {hasDemo && (
-                <a href={project.demoUrl!} target="_blank" rel="noopener noreferrer"
-                  style={{
-                    height: 48, padding: "0 24px", background: "var(--color-accent)", color: "#fff",
-                    border: "none", borderRadius: 6, fontSize: 16, fontWeight: 500,
-                    display: "inline-flex", alignItems: "center", textDecoration: "none", cursor: "pointer",
-                  }}>
+                <a href={project.demoUrl!} target="_blank" rel="noopener noreferrer" className="btn-primary">
                   Live Demo
                 </a>
               )}
               {hasGithub && (
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
-                  style={{
-                    height: 48, padding: "0 20px", background: "transparent",
-                    color: "var(--color-accent)", border: "1.5px solid var(--color-accent)",
-                    borderRadius: 6, fontSize: 16, fontWeight: 500,
-                    display: "inline-flex", alignItems: "center", textDecoration: "none",
-                  }}>
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
                   GitHub
                 </a>
               )}
             </div>
           </div>
         </div>
-
-        {/* Navigation */}
-        <div style={{
-          display: "flex", justifyContent: "space-between",
-          padding: "24px 32px", borderTop: "1px solid var(--color-border)",
-        }}>
-          <button
-            onClick={() => setCurrentIndex((i) => i - 1)}
-            disabled={currentIndex === 0}
-            style={{
-              background: "none", border: "1.5px solid var(--color-border)",
-              borderRadius: 6, padding: "0 16px", height: 40, cursor: "pointer",
-              fontSize: 14, fontWeight: 500, color: "var(--color-text)",
-              display: "flex", alignItems: "center", gap: 6,
-              fontFamily: "inherit",
-              opacity: currentIndex === 0 ? 0.3 : 1,
-            }}
-          >
-            ← Previous
-          </button>
-          <button
-            onClick={() => setCurrentIndex((i) => i + 1)}
-            disabled={currentIndex === allProjects.length - 1}
-            style={{
-              background: "none", border: "1.5px solid var(--color-border)",
-              borderRadius: 6, padding: "0 16px", height: 40, cursor: "pointer",
-              fontSize: 14, fontWeight: 500, color: "var(--color-text)",
-              display: "flex", alignItems: "center", gap: 6,
-              fontFamily: "inherit",
-              opacity: currentIndex === allProjects.length - 1 ? 0.3 : 1,
-            }}
-          >
-            Next →
-          </button>
-        </div>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .modal-body-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </div>
   );
 }

@@ -52,11 +52,16 @@ export default function ContactForm() {
     setErrors({});
     setSubmitting(true);
     try {
-      await fetch("/api/contact", {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setErrors({ message: data.error ?? "Failed to send message. Please try again." });
+        return;
+      }
       setValues({ name: "", email: "", message: "" });
       setTouched({});
       setSuccess(true);
@@ -114,18 +119,8 @@ export default function ContactForm() {
           {errors[field] && <span style={{ fontSize: 13, color: "var(--color-error)", minHeight: 18 }}>{errors[field]}</span>}
         </div>
       ))}
-      <button
-        type="submit"
-        disabled={submitting}
-        style={{
-          width: "100%", height: 48, background: "var(--color-accent)", color: "#fff",
-          border: "none", borderRadius: 6, fontSize: 16, fontWeight: 500,
-          cursor: "pointer", transition: "background-color 0.15s", fontFamily: "inherit",
-          opacity: submitting ? 0.5 : 1,
-        }}
-        onMouseEnter={(e) => { if (!submitting) (e.currentTarget as HTMLButtonElement).style.background = "#2B6CB0"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-accent)"; }}
-      >
+      <button type="submit" disabled={submitting}
+        className="btn-primary btn-full" style={{ opacity: submitting ? 0.5 : 1 }}>
         {submitting ? "Sending…" : "Send message"}
       </button>
     </form>

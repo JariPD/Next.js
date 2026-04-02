@@ -8,8 +8,13 @@ export function formatDate(dateStr: string): string {
   return `${day} ${MONTHS[month - 1]} ${year}`;
 }
 
+/** Formats a project's year/month fields as "Month YYYY" (e.g. "January 2026") */
+export function formatProjectDate(year: number, month: number): string {
+  return `${MONTHS[month - 1]} ${year}`;
+}
+
 export function displayName(email: string): string {
   if (email === "jari@email.nl") return "Jari Dijk";
-  if (email === "user@example.com") return "Demo User";
+  if (email === "user@email.nl") return "Demo User";
   return email.split("@")[0];
 }

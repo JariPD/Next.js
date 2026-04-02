@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { inputStyle } from "@/lib/styles";
 
 export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
   const [title, setTitle] = useState("");
@@ -45,13 +46,6 @@ export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
     }
   }
 
-  const inputStyle: React.CSSProperties = {
-    height: 44, border: "1.5px solid var(--color-border)",
-    borderRadius: 6, padding: "0 12px", fontSize: 16, fontFamily: "inherit",
-    color: "var(--color-text)", background: "var(--color-white)",
-    outline: "none", width: "100%", transition: "border-color 0.15s, box-shadow 0.15s",
-  };
-
   return (
     <div style={{ background: "var(--color-white)", border: "1px solid var(--color-border)", borderRadius: 8, padding: 32, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", maxWidth: 720 }}>
       <h3 style={{ marginBottom: 24 }}>Write a post</h3>
@@ -93,15 +87,7 @@ export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
           Posting as <strong style={{ color: "var(--color-text)" }}>{authorEmail}</strong>
         </p>
         <div style={{ display: "flex", gap: 12 }}>
-          <button type="submit" disabled={submitting} style={{
-            height: 48, padding: "0 24px", background: "var(--color-accent)", color: "#fff",
-            border: "none", borderRadius: 6, fontSize: 16, fontWeight: 500,
-            cursor: "pointer", fontFamily: "inherit", opacity: submitting ? 0.5 : 1,
-            transition: "background-color 0.15s",
-          }}
-            onMouseEnter={(e) => { if (!submitting) (e.currentTarget as HTMLButtonElement).style.background = "#2B6CB0"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-accent)"; }}
-          >
+          <button type="submit" disabled={submitting} className="btn-primary" style={{ opacity: submitting ? 0.5 : 1 }}>
             {submitting ? "Submitting…" : "Submit post"}
           </button>
         </div>

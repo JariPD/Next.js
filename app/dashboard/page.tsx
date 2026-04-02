@@ -3,8 +3,9 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { getPostsByAuthor } from "@/lib/blog";
 import StatusBadge from "@/components/StatusBadge";
-
-const container: React.CSSProperties = { maxWidth: "var(--container-width)", margin: "0 auto", padding: "0 24px" };
+import Button from "@/components/Button";
+import StatsRow from "@/components/StatsRow";
+import { container, section } from "@/lib/styles";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -16,41 +17,30 @@ export default async function DashboardPage() {
   const rejected = posts.filter((p) => p.status === "rejected").length;
 
   return (
-    <main style={{ padding: "64px 0" }}>
+    <main style={section}>
       <div style={container}>
         <div className="page-header">
           <div>
-            <h1 style={{ fontSize: 32, marginBottom: 4 }}>Dashboard</h1>
+            <h1 style={{ fontSize: 32, marginBottom: 4 }}>My Dashboard</h1>
             <p style={{ fontSize: 14, color: "var(--color-gray-text)" }}>
               Welcome back, {session.user.name ?? session.user.email}
             </p>
           </div>
-          <Link href="/blog/new" className="btn-primary">New post</Link>
+          <Button variant="primary" href="/blog/new">New post</Button>
         </div>
 
         {/* Stats */}
-        <div className="stats-row">
-          {[
-            { label: "Published", count: published, color: "var(--color-success)" },
-            { label: "Pending", count: pending, color: "var(--color-warning)" },
-            { label: "Rejected", count: rejected, color: "var(--color-error)" },
-          ].map(({ label, count, color }) => (
-            <div key={label} className="stat-card">
-              <div className="stat-num" style={{ color }}>{count}</div>
-              <div className="stat-lbl">{label}</div>
-            </div>
-          ))}
-        </div>
+        <StatsRow published={published} pending={pending} rejected={rejected} />
 
         {/* Post list */}
         <div className="posts-section">
-          <h2>Your Posts</h2>
+          <h2>My blog posts</h2>
           {posts.length === 0 ? (
             <div className="posts-list" style={{ textAlign: "center", padding: 48 }}>
               <p style={{ color: "var(--color-gray-text)", marginBottom: 16 }}>
-                You haven't written any posts yet.
+                You haven&apos;t written any posts yet.
               </p>
-              <Link href="/blog/new" className="btn-primary">Write your first post</Link>
+              <Button variant="primary" href="/blog/new">Write your first post</Button>
             </div>
           ) : (
             <div className="posts-list">
@@ -75,51 +65,6 @@ export default async function DashboardPage() {
           )}
         </div>
       </div>
-
-      <style>{`
-        .btn-primary {
-          height: 48px; padding: 0 24px; background: var(--color-accent); color: #fff;
-          border: none; border-radius: 6px; font-size: 16px; font-weight: 500;
-          cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
-          transition: background-color 0.15s; font-family: inherit;
-        }
-        .btn-primary:hover { background-color: #2B6CB0; text-decoration: none; }
-        .page-header {
-          display: flex; align-items: center; justify-content: space-between;
-          margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
-        }
-        .stats-row { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
-        .stat-card {
-          flex: 1; min-width: 140px; background: var(--color-white);
-          border: 1px solid var(--color-border); border-radius: 8px;
-          padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center;
-        }
-        .stat-num { font-size: 36px; font-weight: 700; line-height: 1; }
-        .stat-lbl { font-size: 13px; color: var(--color-gray-text); margin-top: 4px; }
-        .posts-section h2 { font-size: 22px; margin-bottom: 24px; }
-        .posts-list {
-          background: var(--color-white); border: 1px solid var(--color-border);
-          border-radius: 8px; overflow: hidden;
-        }
-        .post-row {
-          display: flex; align-items: center; justify-content: space-between;
-          padding: 14px 24px; gap: 16px;
-          border-bottom: 1px solid var(--color-border); transition: background 0.15s;
-        }
-        .post-row:last-child { border-bottom: none; }
-        .post-row:hover { background: var(--color-light-gray); }
-        .post-row-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
-        .post-title {
-          font-size: 15px; font-weight: 500; color: var(--color-text);
-          text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        a.post-title:hover { color: var(--color-accent); text-decoration: underline; }
-        .post-row-meta { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-        @media (max-width: 768px) {
-          .stats-row { flex-direction: column; }
-          .page-header { flex-direction: column; align-items: flex-start; }
-        }
-      `}</style>
     </main>
   );
 }

@@ -8,7 +8,7 @@
   },
   {
     "id": 2,
-    "email": "user@example.com",
+    "email": "user@email.nl",
     "password": "$2b$10$TFK1O3ZN/Sa3QLHXeB/skOoYcPIuAlBbvAm7dtstR9W7Bxf.CCnMm",
     "role": "user",
     "name": "Demo User"

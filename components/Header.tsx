@@ -243,12 +243,6 @@ export default function Header() {
         </div>
       )}
 
-      <style>{`
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .mobile-toggle-btn { display: flex !important; }
-        }
-      `}</style>
     </header>
   );
 }
