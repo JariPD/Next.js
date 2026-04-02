@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 type FieldErrors = { name?: string; email?: string; message?: string };
 
@@ -42,7 +42,7 @@ export default function ContactForm() {
     setErrors((prev) => ({ ...prev, [name]: errs[name] }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {

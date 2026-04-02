@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
@@ -16,7 +16,7 @@ export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, []);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
       setError("Title and content are required.");
