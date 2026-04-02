@@ -28,6 +28,17 @@ export default function AdminActions({
     }
   }
 
+  async function handleDelete() {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+    setLoading(true);
+    try {
+      await fetch(`/api/blog/posts/${postId}`, { method: "DELETE" });
+      router.refresh();
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const btnBase: React.CSSProperties = {
     height: 40, padding: "0 20px", border: "none", borderRadius: 6,
     fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit",
@@ -54,6 +65,10 @@ export default function AdminActions({
           Set Pending
         </button>
       )}
+      <button onClick={handleDelete} disabled={loading}
+        style={{ ...btnBase, background: "none", color: "var(--color-error)", border: "1.5px solid var(--color-error)" }}>
+        Delete
+      </button>
     </div>
   );
 }

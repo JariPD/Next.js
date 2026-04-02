@@ -55,3 +55,11 @@ export function updatePostStatus(id: number, status: Status): boolean {
   writePosts(posts);
   return true;
 }
+
+export function deletePost(id: number): boolean {
+  const posts = readPosts();
+  const filtered = posts.filter((p) => p.id !== id);
+  if (filtered.length === posts.length) return false;
+  writePosts(filtered);
+  return true;
+}
