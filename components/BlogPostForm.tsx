@@ -16,7 +16,7 @@ export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
       setError("Title and content are required.");

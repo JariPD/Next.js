@@ -1,4 +1,5 @@
-import data from "@/data/users.json";
+import fs from "fs";
+import path from "path";
 
 export type User = {
   id: number;
@@ -8,6 +9,12 @@ export type User = {
   name: string;
 };
 
+function readUsers(): User[] {
+  const filePath = path.join(process.cwd(), "data/users.json");
+  const raw = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(raw) as User[];
+}
+
 export function getUserByEmail(email: string): User | undefined {
-  return (data as User[]).find((u) => u.email === email);
+  return readUsers().find((u) => u.email === email);
 }
