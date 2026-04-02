@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 
@@ -15,7 +14,6 @@ const navLinks = [
 ];
 
 export default function Header() {
-  const pathname = usePathname();
   const { data: session } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);

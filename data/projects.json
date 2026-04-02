@@ -11,8 +11,7 @@
     "demoUrl": "#",
     "githubUrl": "#",
     "year": 2026,
-    "month": 1,
-    "featured": true
+    "month": 1
   },
   {
     "id": 2,
@@ -26,8 +25,7 @@
     "demoUrl": "#",
     "githubUrl": "#",
     "year": 2024,
-    "month": 6,
-    "featured": true
+    "month": 6
   },
   {
     "id": 3,
@@ -41,7 +39,6 @@
     "demoUrl": "#",
     "githubUrl": "#",
     "year": 2025,
-    "month": 10,
-    "featured": false
+    "month": 10
   }
 ]
