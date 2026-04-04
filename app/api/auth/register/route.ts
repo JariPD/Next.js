@@ -12,6 +12,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "All fields are required." }, { status: 400 });
   }
 
+  if (password.length < 5) {
+    return NextResponse.json({ error: "Password must be at least 5 characters." }, { status: 400 });
+  }
+
   if (getUserByEmail(email)) {
     return NextResponse.json({ error: "Email already registered." }, { status: 409 });
   }

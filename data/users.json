@@ -12,5 +12,12 @@
     "password": "$2b$10$TFK1O3ZN/Sa3QLHXeB/skOoYcPIuAlBbvAm7dtstR9W7Bxf.CCnMm",
     "role": "user",
     "name": "Demo User"
+  },
+  {
+    "id": 3,
+    "email": "12345@email.nl",
+    "password": "$2b$10$8b3aGgjYE2yklsJ2xIFkLejLpXV68Qo/H334WcrJ3hiBl5R4OMSLS",
+    "role": "user",
+    "name": "test"
   }
 ]

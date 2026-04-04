@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Status } from "@/lib/blog";
+import DeletePostButton from "@/components/DeletePostButton";
 
 export default function AdminActions({
   postId,
@@ -34,22 +35,6 @@ export default function AdminActions({
     }
   }
 
-  async function handleDelete() {
-    if (!confirm("Are you sure you want to delete this post?")) return;
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/blog/posts/${postId}`, { method: "DELETE" });
-      if (!res.ok) {
-        setError("Failed to delete post.");
-        return;
-      }
-      router.refresh();
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <div>
       {error && (
@@ -71,10 +56,7 @@ export default function AdminActions({
             Set Pending
           </button>
         )}
-        <button onClick={handleDelete} disabled={loading}
-          className="btn-outline" style={{ color: "var(--color-error)", borderColor: "var(--color-error)" }}>
-          Delete
-        </button>
+        <DeletePostButton postId={postId} />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { getPostsByAuthor } from "@/lib/blog";
 import StatusBadge from "@/components/StatusBadge";
 import Button from "@/components/Button";
+import DeletePostButton from "@/components/DeletePostButton";
 import StatsRow from "@/components/StatsRow";
 import { container, section } from "@/lib/styles";
 
@@ -58,6 +59,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="post-row-meta">
                     <span style={{ fontSize: 13, color: "var(--color-gray-text)" }}>{post.date}</span>
+                    <DeletePostButton postId={post.id} />
                   </div>
                 </div>
               ))}

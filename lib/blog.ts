@@ -37,6 +37,10 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
   return readPosts().find((p) => p.slug === slug);
 }
 
+export function getPostById(id: number): BlogPost | undefined {
+  return readPosts().find((p) => p.id === id);
+}
+
 export function getPostsByAuthor(email: string): BlogPost[] {
   return readPosts().filter((p) => p.author === email);
 }
