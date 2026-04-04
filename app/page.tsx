@@ -21,7 +21,7 @@ export default function Home() {
       {/* ── HERO ── */}
       <section id="hero" style={sec}>
         <div style={container}>
-          <div className="hero-inner" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 64 }}>
+          <div className="hero-inner">
             <div style={{ flex: 1, maxWidth: 560 }}>
               <p style={{ fontSize: 14, fontWeight: 500, textTransform: "uppercase", letterSpacing: "1.5px", color: "var(--color-accent)", marginBottom: 8 }}>
                 Full-Stack Developer
@@ -35,7 +35,7 @@ export default function Home() {
                   <span key={tag} className="hero-skill-tag">{tag}</span>
                 ))}
               </div>
-              <div className="hero-ctas" style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+              <div className="hero-ctas">
                 <Link href="#projects" className="btn-primary">View projects</Link>
                 <Link href="#contact" className="btn-secondary">Get in touch</Link>
               </div>
@@ -48,7 +48,7 @@ export default function Home() {
       {/* ── ABOUT ── */}
       <section id="about" className="section-gray" style={sec}>
         <div style={container}>
-          <div className="about-inner" style={{ display: "flex", gap: 64, alignItems: "flex-start" }}>
+          <div className="about-inner">
             <div style={{ flex: 1 }} className="reveal">
               <h2 style={{ marginBottom: 24 }}>About Me</h2>
               <p className="text-gray" style={{ marginBottom: 16 }}>
@@ -61,7 +61,7 @@ export default function Home() {
                 Outside of coding I find inspiration in design, enjoy sports, and invest time in game design.
               </p>
             </div>
-            <div className="about-stats reveal" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, minWidth: 280 }}>
+            <div className="about-stats reveal">
               {[
                 { num: "2+",   label: "Years experience" },
                 { num: "12+",  label: "Projects completed" },
@@ -70,7 +70,7 @@ export default function Home() {
               ].map(({ num, label }) => (
                 <div key={label} className="stat-box">
                   <div className="stat-number">{num}</div>
-                  <div className="stat-label">{label}</div>
+                  <div className="stat-lbl">{label}</div>
                 </div>
               ))}
             </div>
@@ -170,7 +170,7 @@ export default function Home() {
       {/* ── CONTACT ── */}
       <section id="contact" style={sec}>
         <div style={container}>
-          <div className="contact-inner" style={{ display: "flex", gap: 64, alignItems: "flex-start" }}>
+          <div className="contact-inner">
             <div className="contact-form-wrap">
               <div className="section-heading reveal">
                 <h2>Contact</h2>

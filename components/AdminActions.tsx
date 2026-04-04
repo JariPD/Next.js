@@ -57,25 +57,22 @@ export default function AdminActions({
       )}
       <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
         {currentStatus !== "published" && (
-          <button onClick={() => setStatus("published")} disabled={loading}
-            className="btn-success" style={{ opacity: loading ? 0.4 : 1 }}>
+          <button onClick={() => setStatus("published")} disabled={loading} className="btn-success">
             Approve
           </button>
         )}
         {currentStatus !== "rejected" && (
-          <button onClick={() => setStatus("rejected")} disabled={loading}
-            className="btn-danger" style={{ opacity: loading ? 0.4 : 1 }}>
+          <button onClick={() => setStatus("rejected")} disabled={loading} className="btn-danger">
             Reject
           </button>
         )}
         {currentStatus !== "pending" && (
-          <button onClick={() => setStatus("pending")} disabled={loading}
-            className="btn-outline" style={{ opacity: loading ? 0.4 : 1 }}>
+          <button onClick={() => setStatus("pending")} disabled={loading} className="btn-outline">
             Set Pending
           </button>
         )}
         <button onClick={handleDelete} disabled={loading}
-          className="btn-outline" style={{ opacity: loading ? 0.4 : 1, color: "var(--color-error)", borderColor: "var(--color-error)" }}>
+          className="btn-outline" style={{ color: "var(--color-error)", borderColor: "var(--color-error)" }}>
           Delete
         </button>
       </div>
