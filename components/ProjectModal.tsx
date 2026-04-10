@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
+import Image from "next/image";
 import type { Project } from "@/lib/projects";
 import { formatProjectDate } from "@/lib/format";
 
@@ -130,9 +131,10 @@ export default function ProjectModal({
               background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
               borderTop: `4px solid ${project.color}`,
               display: "flex", alignItems: "center", justifyContent: "center",
+              position: "relative",
             }}>
               {project.images[selectedImage]
-                ? <img src={project.images[selectedImage]} alt={`${project.title} screenshot ${selectedImage + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ? <Image src={project.images[selectedImage]} alt={`${project.title} screenshot ${selectedImage + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="modal-main-img" />
                 : <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
                     {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
                   </span>
@@ -151,7 +153,7 @@ export default function ProjectModal({
                         flexShrink: 0,
                       }}
                     >
-                      <img src={src} alt={`${project.title} thumbnail ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <Image src={src} alt={`${project.title} thumbnail ${i + 1}`} width={56} height={40} sizes="56px" className="modal-thumb-img" />
                     </div>
                   ))
                 : [0, 1, 2].map((i) => (
