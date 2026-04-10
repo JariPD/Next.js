@@ -1,4 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
+import profile from "@/public/Profile.jpg";
+import profileHover from "@/public/ProfileHover.jpg";
 import { getAllProjects } from "@/lib/projects";
 import { getPublishedPosts } from "@/lib/blog";
 import ProjectCard from "@/components/ProjectCard";
@@ -39,7 +42,10 @@ export default function Home() {
                 <Link href="#contact" className="btn-secondary">Get in touch</Link>
               </div>
             </div>
-            <div className="hero-photo" aria-hidden="true">JD</div>
+            <div className="hero-photo">
+              <Image src={profile} alt="Jari Dijk" className="hero-photo-img" fill fetchPriority={"high"} priority sizes="(max-width: 768px) 160px, (max-width: 1024px) 220px, 280px" />
+              <Image src={profileHover} alt="Jari Dijk" className="hero-photo-img hero-photo-img-hover" fill sizes="(max-width: 768px) 160px, (max-width: 1024px) 220px, 280px" />
+            </div>
           </div>
         </div>
       </section>

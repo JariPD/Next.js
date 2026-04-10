@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { Project } from "@/lib/projects";
 import { formatProjectDate } from "@/lib/format";
 import ProjectModal from "./ProjectModal";
@@ -26,9 +27,10 @@ export default function ProjectCard({ project, index, allProjects }: {
             background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
             borderTop: `4px solid ${project.color}`,
             display: "flex", alignItems: "center", justifyContent: "center",
+            position: "relative",
           }}>
             {project.thumbnail
-              ? <img src={project.thumbnail} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ? <Image src={project.thumbnail} alt={project.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 320px" className="project-thumb-img" />
               : <span style={{ fontSize: 36, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -1 }}>
                   {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
                 </span>
