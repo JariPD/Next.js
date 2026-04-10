@@ -60,6 +60,8 @@
   padding: 0 24px;
 }
 
+.section { padding: 64px 0; }
+
 .section-gray { background: var(--color-light-gray); }
 
 .section-heading { margin-bottom: 32px; }
@@ -196,8 +198,33 @@
 .btn-outline:hover    { background-color: var(--color-light-gray); }
 .btn-outline:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.btn-outline-danger {
+  background-color: transparent;
+  color: var(--color-error);
+  height: 40px;
+  padding: 0 20px;
+  border: 1.5px solid var(--color-error);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.15s, color 0.15s;
+}
+.btn-outline-danger:hover    { background-color: var(--color-error); color: var(--color-white); }
+.btn-outline-danger:disabled { opacity: 0.4; cursor: not-allowed; }
+
 /* Full-width button modifier */
 .btn-full { width: 100%; justify-content: center; }
+
+/* ── Forms ──────────────────────────────────────────────────────────────── */
+.form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-label { font-size: 14px; font-weight: 500; color: var(--color-text); }
+
+.alert-success { background: #F0FFF4; border: 1px solid #9AE6B4; color: var(--color-success); border-radius: 6px; padding: 12px 16px; font-size: 14px; margin-bottom: 16px; }
+.alert-error   { background: #FFF5F5; border: 1px solid #FEB2B2; color: var(--color-error);   border-radius: 6px; padding: 12px 16px; font-size: 14px; margin-bottom: 16px; }
 
 /* ── Form inputs ────────────────────────────────────────────────────────── */
 .input {
@@ -242,6 +269,12 @@
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
+
+/* ── Status badges ──────────────────────────────────────────────────────── */
+.status-badge           { font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 12px; white-space: nowrap; display: inline-block; }
+.status-badge-published { color: #38A169; background: #F0FFF4; }
+.status-badge-pending   { color: #DD6B20; background: #FFFAF0; }
+.status-badge-rejected  { color: #E53E3E; background: #FFF5F5; }
 
 /* ── Tech tags ──────────────────────────────────────────────────────────── */
 .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -421,6 +454,7 @@
 
 /* ── Contact ────────────────────────────────────────────────────────────── */
 .contact-form-wrap { flex: 1; max-width: 600px; }
+.contact-icon { width: 36px; height: 36px; background: var(--color-light-gray); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--color-text); flex-shrink: 0; }
 
 .contact-link {
   display: flex;

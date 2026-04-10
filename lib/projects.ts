@@ -9,6 +9,8 @@ export type Project = {
   approach: string;
   role: string;
   color: string;
+  thumbnail: string | null;
+  images: string[];
   demoUrl: string | null;
   githubUrl: string;
   year: number;

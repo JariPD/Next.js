@@ -130,24 +130,16 @@ export default function LoginForm() {
         {/* ── Log in form ── */}
         {tab === "login" && (
           <form onSubmit={handleLogin}>
-            {loginError && (
-              <div style={{
-                background: "#FFF5F5", border: "1px solid #FEB2B2",
-                color: "var(--color-error)", borderRadius: 6,
-                padding: "10px 14px", fontSize: 14, marginBottom: 16,
-              }}>
-                {loginError}
-              </div>
-            )}
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
-              <label style={{ fontSize: 14, fontWeight: 500 }}>Email</label>
+            {loginError && <div className="alert-error">{loginError}</div>}
+            <div className="form-field">
+              <label className="form-label">Email</label>
               <input type="email" value={loginData.email}
                 onChange={(e) => setLoginData((d) => ({ ...d, email: e.target.value }))}
                 placeholder="your@email.com" required className="input"
               />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
-              <label style={{ fontSize: 14, fontWeight: 500 }}>Password</label>
+            <div className="form-field">
+              <label className="form-label">Password</label>
               <input type="password" value={loginData.password}
                 onChange={(e) => setLoginData((d) => ({ ...d, password: e.target.value }))}
                 placeholder="••••••••" required className="input"
@@ -155,7 +147,7 @@ export default function LoginForm() {
             </div>
             <button type="submit" disabled={loggingIn}
               className="btn-primary btn-full"
-              style={{ opacity: loggingIn ? 0.5 : 1, marginTop: 8 }}>
+              style={{ marginTop: 8 }}>
               {loggingIn ? "Signing in…" : "Log in"}
             </button>
 
@@ -175,23 +167,15 @@ export default function LoginForm() {
         {/* ── Register form ── */}
         {tab === "register" && (
           <form onSubmit={handleRegister}>
-            {regSuccess && (
-              <div style={{ background: "#F0FFF4", border: "1px solid #9AE6B4", color: "var(--color-success)", borderRadius: 6, padding: "10px 14px", fontSize: 14, marginBottom: 16 }}>
-                Account created! Signing you in…
-              </div>
-            )}
-            {regError && (
-              <div style={{ background: "#FFF5F5", border: "1px solid #FEB2B2", color: "var(--color-error)", borderRadius: 6, padding: "10px 14px", fontSize: 14, marginBottom: 16 }}>
-                {regError}
-              </div>
-            )}
+            {regSuccess && <div className="alert-success">Account created! Signing you in…</div>}
+            {regError && <div className="alert-error">{regError}</div>}
             {[
               { label: "Name",     field: "name"     as const, type: "text",     placeholder: "Your name" },
               { label: "Email",    field: "email"    as const, type: "email",    placeholder: "your@email.com" },
               { label: "Password", field: "password" as const, type: "password", placeholder: "••••••••" },
             ].map(({ label, field, type, placeholder }) => (
-              <div key={field} style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
-                <label style={{ fontSize: 14, fontWeight: 500 }}>{label}</label>
+              <div key={field} className="form-field">
+                <label className="form-label">{label}</label>
                 <input type={type} value={regData[field]}
                   onChange={(e) => setRegData((d) => ({ ...d, [field]: e.target.value }))}
                   placeholder={placeholder} required className="input"
@@ -200,7 +184,7 @@ export default function LoginForm() {
             ))}
             <button type="submit" disabled={registering}
               className="btn-primary btn-full"
-              style={{ opacity: registering ? 0.5 : 1, marginTop: 8 }}>
+              style={{ marginTop: 8 }}>
               {registering ? "Creating account…" : "Create account"}
             </button>
           </form>

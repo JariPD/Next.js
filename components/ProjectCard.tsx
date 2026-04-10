@@ -20,8 +20,20 @@ export default function ProjectCard({ project, index, allProjects }: {
         onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)"; }}
       >
         <div>
-          {/* Color accent strip matching prototype */}
-          <div style={{ width: "100%", height: 6, borderRadius: 4, background: project.color, marginBottom: 16 }} />
+          {/* Thumbnail */}
+          <div style={{
+            width: "100%", aspectRatio: "16/9", borderRadius: 6, marginBottom: 16, overflow: "hidden",
+            background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
+            borderTop: `4px solid ${project.color}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            {project.thumbnail
+              ? <img src={project.thumbnail} alt={project.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              : <span style={{ fontSize: 36, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -1 }}>
+                  {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
+                </span>
+            }
+          </div>
           <h3 style={{ marginBottom: 8 }}>{project.title}</h3>
           <p style={{ fontSize: 14, color: "var(--color-gray-text)", margin: "8px 0 8px", lineHeight: 1.6 }}>
             {project.shortDescription}

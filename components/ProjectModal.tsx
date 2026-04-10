@@ -14,7 +14,11 @@ export default function ProjectModal({
   onClose: () => void;
 }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [selectedImage, setSelectedImage] = useState(0);
   const project = allProjects[currentIndex];
+
+  // Reset selected image when switching projects
+  useEffect(() => { setSelectedImage(0); }, [currentIndex]);
 
   const handleKey = useCallback(
     (e: KeyboardEvent) => {
@@ -120,24 +124,44 @@ export default function ProjectModal({
         <div className="modal-body-grid">
           {/* Gallery */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Main image */}
             <div style={{
-              width: "100%", aspectRatio: "16/10", borderRadius: 8,
+              width: "100%", aspectRatio: "16/10", borderRadius: 8, overflow: "hidden",
               background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
               borderTop: `4px solid ${project.color}`,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
-                {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
-              </span>
+              {project.images[selectedImage]
+                ? <img src={project.images[selectedImage]} alt={`${project.title} screenshot ${selectedImage + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                : <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
+                    {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
+                  </span>
+              }
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              {[0, 1, 2].map((i) => (
-                <div key={i} style={{
-                  width: 56, height: 40, borderRadius: 4,
-                  border: i === 0 ? `2px solid var(--color-accent)` : "2px solid var(--color-border)",
-                  background: "var(--color-light-gray)", cursor: "pointer",
-                }} />
-              ))}
+            {/* Thumbnails */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {project.images.length > 0
+                ? project.images.map((src, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedImage(i)}
+                      style={{
+                        width: 56, height: 40, borderRadius: 4, overflow: "hidden", cursor: "pointer",
+                        border: i === selectedImage ? `2px solid var(--color-accent)` : "2px solid var(--color-border)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <img src={src} alt={`${project.title} thumbnail ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    </div>
+                  ))
+                : [0, 1, 2].map((i) => (
+                    <div key={i} style={{
+                      width: 56, height: 40, borderRadius: 4,
+                      border: i === 0 ? `2px solid var(--color-accent)` : "2px solid var(--color-border)",
+                      background: "var(--color-light-gray)", cursor: "pointer",
+                    }} />
+                  ))
+              }
             </div>
           </div>
 
