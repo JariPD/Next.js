@@ -6,7 +6,6 @@ import StatusBadge from "@/components/StatusBadge";
 import Button from "@/components/Button";
 import DeletePostButton from "@/components/DeletePostButton";
 import StatsRow from "@/components/StatsRow";
-import { container, section } from "@/lib/styles";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -18,8 +17,8 @@ export default async function DashboardPage() {
   const rejected = posts.filter((p) => p.status === "rejected").length;
 
   return (
-    <main style={section}>
-      <div style={container}>
+    <main className="section">
+      <div className="container">
         <div className="page-header">
           <div>
             <h1 style={{ fontSize: 32, marginBottom: 4 }}>My Dashboard</h1>

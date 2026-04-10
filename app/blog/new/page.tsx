@@ -2,15 +2,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import BlogPostForm from "@/components/BlogPostForm";
-import { container, section } from "@/lib/styles";
 
 export default async function NewPostPage() {
   const session = await auth();
   if (!session?.user?.email) redirect("/login");
 
   return (
-    <main style={section}>
-      <div style={container}>
+    <main className="section">
+      <div className="container">
         <div style={{ marginBottom: 32 }}>
           <Link href="/dashboard" className="back-link">← Back to dashboard</Link>
         </div>

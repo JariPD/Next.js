@@ -22,8 +22,7 @@ export default function DeletePostButton({ postId }: { postId: number }) {
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="btn-outline"
-      style={{ fontSize: 13, color: "var(--color-error)", borderColor: "var(--color-error)" }}
+      className="btn-outline-danger"
     >
       Delete
     </button>

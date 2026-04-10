@@ -86,8 +86,8 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} noValidate>
       {(["name", "email", "message"] as const).map((field) => (
-        <div key={field} style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
-          <label htmlFor={`contact-${field}`} style={{ fontSize: 14, fontWeight: 500, color: "var(--color-text)" }}>
+        <div key={field} className="form-field">
+          <label htmlFor={`contact-${field}`} className="form-label">
             {field.charAt(0).toUpperCase() + field.slice(1)}
           </label>
           {field === "message" ? (
@@ -120,7 +120,7 @@ export default function ContactForm() {
         </div>
       ))}
       <button type="submit" disabled={submitting}
-        className="btn-primary btn-full" style={{ opacity: submitting ? 0.5 : 1 }}>
+        className="btn-primary btn-full">
         {submitting ? "Sending…" : "Send message"}
       </button>
     </form>

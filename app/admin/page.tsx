@@ -4,7 +4,6 @@ import { getAllPosts } from "@/lib/blog";
 import StatusBadge from "@/components/StatusBadge";
 import AdminActions from "@/components/AdminActions";
 import StatsRow from "@/components/StatsRow";
-import { container, section } from "@/lib/styles";
 
 export default async function AdminPage() {
   const session = await auth();
@@ -16,8 +15,8 @@ export default async function AdminPage() {
   const rejected = posts.filter((p) => p.status === "rejected").length;
 
   return (
-    <main style={section}>
-      <div style={container}>
+    <main className="section">
+      <div className="container">
         <div style={{ marginBottom: 32 }}>
           <h1 style={{ fontSize: 32, marginBottom: 4 }}>Blog Moderation</h1>
           <p style={{ fontSize: 14, color: "var(--color-gray-text)" }}>Review and moderate community posts.</p>

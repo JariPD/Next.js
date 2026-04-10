@@ -6,7 +6,6 @@ import { getPublishedPosts, getPostBySlug } from "@/lib/blog";
 import StatusBadge from "@/components/StatusBadge";
 import { formatDate } from "@/lib/format";
 import { displayName } from "@/lib/users";
-import { container } from "@/lib/styles";
 
 export const revalidate = 60;
 
@@ -51,7 +50,7 @@ export default async function BlogPostPage({
     <>
       {/* ── Post hero — gray header matching prototype .post-hero ── */}
       <div className="post-hero">
-        <div style={container}>
+        <div className="container">
           {/* Breadcrumb nav: Home / Blog / Post title */}
           <nav className="post-breadcrumb">
             <Link href="/" className="breadcrumb-link">Home</Link>
@@ -79,7 +78,7 @@ export default async function BlogPostPage({
 
       {/* ── Post body — white section ── */}
       <section>
-        <div style={container}>
+        <div className="container">
           <div className="post-body">
             {/* Simple markdown renderer: ## headings, ``` code blocks, paragraphs */}
             {post.content.split("\n\n").map((block, i) => {

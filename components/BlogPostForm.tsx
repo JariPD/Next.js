@@ -46,29 +46,25 @@ export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
   }
 
   return (
-    <div style={{ background: "var(--color-white)", border: "1px solid var(--color-border)", borderRadius: 8, padding: 32, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", maxWidth: 720 }}>
+    <div className="card" style={{ maxWidth: 720 }}>
       <h3 style={{ marginBottom: 24 }}>Write a post</h3>
 
       {success && (
-        <div style={{ background: "#F0FFF4", border: "1px solid #9AE6B4", color: "var(--color-success)", borderRadius: 6, padding: "12px 16px", fontSize: 14, marginBottom: 24 }}>
-          Post submitted! It will appear after admin review.
-        </div>
+        <div className="alert-success">Post submitted! It will appear after admin review.</div>
       )}
       {error && (
-        <div style={{ background: "#FFF5F5", border: "1px solid #FEB2B2", color: "var(--color-error)", borderRadius: 6, padding: "12px 16px", fontSize: 14, marginBottom: 24 }}>
-          {error}
-        </div>
+        <div className="alert-error">{error}</div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
-          <label style={{ fontSize: 14, fontWeight: 500 }}>Title</label>
+        <div className="form-field">
+          <label className="form-label">Title</label>
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
             placeholder="Give your post a title" className="input"
           />
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 24 }}>
-          <label style={{ fontSize: 14, fontWeight: 500 }}>Content</label>
+        <div className="form-field" style={{ marginBottom: 24 }}>
+          <label className="form-label">Content</label>
           <textarea value={content} onChange={(e) => setContent(e.target.value)}
             placeholder="Write your post here…"
             className="input"
@@ -79,7 +75,7 @@ export default function BlogPostForm({ authorEmail }: { authorEmail: string }) {
           Posting as <strong style={{ color: "var(--color-text)" }}>{authorEmail}</strong>
         </p>
         <div style={{ display: "flex", gap: 12 }}>
-          <button type="submit" disabled={submitting} className="btn-primary" style={{ opacity: submitting ? 0.5 : 1 }}>
+          <button type="submit" disabled={submitting} className="btn-primary">
             {submitting ? "Submitting…" : "Submit post"}
           </button>
         </div>
