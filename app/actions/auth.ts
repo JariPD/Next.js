@@ -11,7 +11,7 @@ export async function loginAction(
     await signIn("credentials", {
       email,
       password,
-      redirectTo: "/dashboard",
+      redirect: false,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -20,6 +20,6 @@ export async function loginAction(
       }
       return "Something went wrong.";
     }
-    throw error; // Re-throw redirect so Next.js handles navigation
+    throw error;
   }
 }

@@ -23,12 +23,17 @@ export default function LoginForm() {
     e.preventDefault();
     setLoginError("");
     setLoggingIn(true);
-    const error = await loginAction(loginData.email, loginData.password);
-    if (error) {
-      setLoginError(error);
+    try {
+      const error = await loginAction(loginData.email, loginData.password);
+      if (error) {
+        setLoginError(error);
+      } else {
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } finally {
       setLoggingIn(false);
     }
-    // On success the server action redirects to /dashboard — no client-side nav needed
   }
 
   async function handleRegister(e: React.SyntheticEvent<HTMLFormElement>) {
