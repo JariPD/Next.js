@@ -3,11 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { loginAction } from "@/app/actions/auth";
-import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const router = useRouter();
   const [tab, setTab] = useState<"login" | "register">("login");
 
   const [loginData, setLoginData]   = useState({ email: "", password: "" });
@@ -24,12 +21,15 @@ export default function LoginForm() {
     setLoginError("");
     setLoggingIn(true);
     try {
-      const error = await loginAction(loginData.email, loginData.password);
-      if (error) {
-        setLoginError(error);
+      const result = await signIn("credentials", {
+        email: loginData.email,
+        password: loginData.password,
+        redirect: false,
+      });
+      if (result?.error) {
+        setLoginError("Incorrect email or password. Try the demo accounts.");
       } else {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       }
     } finally {
       setLoggingIn(false);
@@ -58,8 +58,7 @@ export default function LoginForm() {
         redirect: false,
       });
       if (!result?.error) {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       }
     } finally {
       setRegistering(false);
