@@ -2,6 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 
 export const authConfig: NextAuthConfig = {
   pages: { signIn: "/login" },
+  trustHost: true,
   callbacks: {
     jwt({ token, user }) {
       if (user) token.role = (user as { role?: string }).role;
