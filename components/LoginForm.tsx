@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { loginAction } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -22,21 +23,12 @@ export default function LoginForm() {
     e.preventDefault();
     setLoginError("");
     setLoggingIn(true);
-    try {
-      const result = await signIn("credentials", {
-        email: loginData.email,
-        password: loginData.password,
-        redirect: false,
-      });
-      if (result?.error) {
-        setLoginError("Incorrect email or password. Try the demo accounts.");
-      } else {
-        router.push("/dashboard");
-        router.refresh();
-      }
-    } finally {
+    const error = await loginAction(loginData.email, loginData.password);
+    if (error) {
+      setLoginError(error);
       setLoggingIn(false);
     }
+    // On success the server action redirects to /dashboard — no client-side nav needed
   }
 
   async function handleRegister(e: React.SyntheticEvent<HTMLFormElement>) {
