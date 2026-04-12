@@ -57,7 +57,9 @@ export default function LoginForm() {
         password: regData.password,
         redirect: false,
       });
-      if (!result?.error) {
+      if (result?.error) {
+        setRegError("Account created, but sign-in failed. Please log in manually.");
+      } else {
         window.location.href = "/dashboard";
       }
     } finally {

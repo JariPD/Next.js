@@ -1,27 +1,31 @@
+import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import type { NextAuthRequest } from "next-auth";
 
-export async function proxy(request: NextRequest) {
-  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET });
-  const path = request.nextUrl.pathname;
+// proxy.ts runs in Node.js runtime (Next.js 16), so we can import auth from
+// auth.ts directly — no Edge-safe split config needed. Using the same auth
+// instance that issued the cookie guarantees correct token decoding.
+
+export default auth(function proxy(req: NextAuthRequest) {
+  const path = req.nextUrl.pathname;
+  const session = req.auth;
 
   // Protected routes: require login
   if (path.startsWith("/dashboard") || path.startsWith("/blog/new")) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", request.url));
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
   // Admin routes: require admin role
   if (path.startsWith("/admin")) {
-    if (!token || (token as { role?: string }).role !== "admin") {
-      return NextResponse.redirect(new URL("/", request.url));
+    if ((session?.user as { role?: string } | undefined)?.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
