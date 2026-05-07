@@ -3,10 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const router = useRouter();
   const [tab, setTab] = useState<"login" | "register">("login");
 
   const [loginData, setLoginData]   = useState({ email: "", password: "" });
@@ -31,8 +29,7 @@ export default function LoginForm() {
       if (result?.error) {
         setLoginError("Incorrect email or password. Try the demo accounts.");
       } else {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       }
     } finally {
       setLoggingIn(false);
@@ -60,9 +57,10 @@ export default function LoginForm() {
         password: regData.password,
         redirect: false,
       });
-      if (!result?.error) {
-        router.push("/dashboard");
-        router.refresh();
+      if (result?.error) {
+        setRegError("Account created, but sign-in failed. Please log in manually.");
+      } else {
+        window.location.href = "/dashboard";
       }
     } finally {
       setRegistering(false);
