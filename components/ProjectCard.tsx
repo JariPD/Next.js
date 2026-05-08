@@ -25,12 +25,11 @@ export default function ProjectCard({ project, index, allProjects }: {
           <div style={{
             width: "100%", aspectRatio: "16/9", borderRadius: 6, marginBottom: 16, overflow: "hidden",
             background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
-            borderTop: `4px solid ${project.color}`,
             display: "flex", alignItems: "center", justifyContent: "center",
             position: "relative",
           }}>
             {project.thumbnail
-              ? <Image src={project.thumbnail} alt={project.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 320px" className="project-thumb-img" />
+              ? <Image src={project.thumbnail} alt={project.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 320px" className="project-thumb-img" priority={index < 3} />
               : <span style={{ fontSize: 36, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -1 }}>
                   {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
                 </span>
