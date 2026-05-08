@@ -127,14 +127,13 @@ export default function ProjectModal({
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {/* Main image */}
             <div style={{
-              width: "100%", aspectRatio: "16/10", borderRadius: 8, overflow: "hidden",
+              width: "100%", aspectRatio: "16/10", borderRadius: 6, overflow: "hidden",
               background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
-              borderTop: `4px solid ${project.color}`,
               display: "flex", alignItems: "center", justifyContent: "center",
               position: "relative",
             }}>
               {project.images[selectedImage]
-                ? <Image src={project.images[selectedImage]} alt={`${project.title} screenshot ${selectedImage + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="modal-main-img" />
+                ? <Image src={project.images[selectedImage]} alt={`${project.title} screenshot ${selectedImage + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="modal-main-img" priority />
                 : <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
                     {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
                   </span>
