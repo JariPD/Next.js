@@ -60,6 +60,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              example:
+                error: "Email address already in use"
 
   /auth/login:
     post:
@@ -524,24 +526,32 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+          example:
+            error: "Missing required fields or validation failure"
     Unauthorized:
       description: Not authenticated — no valid session cookie present
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+          example:
+            error: "Not authenticated — no valid session"
     Forbidden:
       description: Authenticated but insufficient role (requires admin)
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+          example:
+            error: "Admin access required"
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+          example:
+            error: "Resource not found"
 
   schemas:
 
@@ -550,7 +560,7 @@ components:
       properties:
         error:
           type: string
-          example: Invalid input
+          example: "An error occurred"
 
     UserPublic:
       type: object
