@@ -357,8 +357,7 @@ paths:
       tags: [Projects]
       summary: Create a new project
       description: |
-        Admin only. Adds a new project to the database. Replaces direct JSON file editing.
-        Technologies can be attached by name — new ones are created automatically. (US07, Casus Backend)
+        Admin only. Adds a new project to the database. Technologies are stored as a string array on the project. (US07, Casus Backend)
       security:
         - sessionAuth: []
       requestBody:
@@ -662,7 +661,7 @@ components:
         approach:
           type: string
           nullable: true
-        my_role:
+        role:
           type: string
           nullable: true
         thumbnail_url:
@@ -719,7 +718,7 @@ components:
         approach:
           type: string
           nullable: true
-        my_role:
+        role:
           type: string
           nullable: true
         thumbnail_url:
@@ -740,7 +739,7 @@ components:
           example: 1
         technologies:
           type: array
-          description: Technology names. New ones are created automatically.
+          description: Array of technology names stored directly on the project.
           items:
             type: string
           example: [Next.js, TypeScript, PostgreSQL]
