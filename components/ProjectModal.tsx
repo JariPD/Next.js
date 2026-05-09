@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import type { Project } from "@/lib/projects";
 import { formatProjectDate } from "@/lib/format";
+
+const THUMB_VISIBLE = 5;
 
 export default function ProjectModal({
   allProjects,
@@ -16,10 +19,34 @@ export default function ProjectModal({
 }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [thumbOffset, setThumbOffset] = useState(0);
   const project = allProjects[currentIndex];
 
-  // Reset selected image when switching projects
-  useEffect(() => { setSelectedImage(0); }, [currentIndex]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
+
+  // Keep selectedImage in sync with carousel, and ensure it stays visible in the thumb strip
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => {
+      const snap = emblaApi.selectedScrollSnap();
+      setSelectedImage(snap);
+      setThumbOffset((offset) => {
+        if (snap < offset) return snap;
+        if (snap >= offset + THUMB_VISIBLE) return snap - THUMB_VISIBLE + 1;
+        return offset;
+      });
+    };
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => { emblaApi.off("select", onSelect); emblaApi.off("reInit", onSelect); };
+  }, [emblaApi]);
+
+  // Reset carousel and thumb strip when switching projects
+  useEffect(() => {
+    setSelectedImage(0);
+    setThumbOffset(0);
+    emblaApi?.scrollTo(0, true);
+  }, [currentIndex, emblaApi]);
 
   const handleKey = useCallback(
     (e: KeyboardEvent) => {
@@ -43,6 +70,18 @@ export default function ProjectModal({
 
   const hasDemo = project.demoUrl && project.demoUrl !== "#";
   const hasGithub = project.githubUrl && project.githubUrl !== "#";
+
+  const thumbImages = project.images.slice(thumbOffset, thumbOffset + THUMB_VISIBLE);
+  const canThumbPrev = thumbOffset > 0;
+  const canThumbNext = thumbOffset + THUMB_VISIBLE < project.images.length;
+
+  const navBtn = (style?: React.CSSProperties): React.CSSProperties => ({
+    width: 28, height: 40, border: "1px solid var(--color-border)",
+    background: "var(--color-light-gray)", borderRadius: 4, cursor: "pointer",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: 13, flexShrink: 0, transition: "background 0.15s",
+    ...style,
+  });
 
   return (
     <div
@@ -124,46 +163,91 @@ export default function ProjectModal({
         {/* Body: gallery + details */}
         <div className="modal-body-grid">
           {/* Gallery */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {/* Main image */}
-            <div style={{
-              width: "100%", aspectRatio: "16/10", borderRadius: 6, overflow: "hidden",
-              background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              position: "relative",
-            }}>
-              {project.images[selectedImage]
-                ? <Image src={project.images[selectedImage]} alt={`${project.title} screenshot ${selectedImage + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className="modal-main-img" priority />
-                : <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {/* Embla main image */}
+            <div
+              ref={emblaRef}
+              style={{
+                width: "100%", aspectRatio: "16/10", borderRadius: 6, overflow: "hidden",
+                background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
+              }}
+            >
+              {project.images.length > 0 ? (
+                <div style={{ display: "flex", height: "100%" }}>
+                  {project.images.map((src, i) => (
+                    <div key={i} style={{ flex: "0 0 100%", minWidth: 0, position: "relative", height: "100%" }}>
+                      <Image
+                        src={src}
+                        alt={`${project.title} screenshot ${i + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="modal-main-img"
+                        priority={i === 0}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
                     {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
                   </span>
-              }
+                </div>
+              )}
             </div>
-            {/* Thumbnails */}
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {project.images.length > 0
-                ? project.images.map((src, i) => (
-                    <div
-                      key={i}
-                      onClick={() => setSelectedImage(i)}
-                      style={{
-                        width: 56, height: 40, borderRadius: 4, overflow: "hidden", cursor: "pointer",
-                        border: i === selectedImage ? `2px solid var(--color-accent)` : "2px solid var(--color-border)",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Image src={src} alt={`${project.title} thumbnail ${i + 1}`} width={56} height={40} sizes="56px" className="modal-thumb-img" />
-                    </div>
-                  ))
-                : [0, 1, 2].map((i) => (
-                    <div key={i} style={{
-                      width: 56, height: 40, borderRadius: 4,
-                      border: i === 0 ? `2px solid var(--color-accent)` : "2px solid var(--color-border)",
-                      background: "var(--color-light-gray)", cursor: "pointer",
-                    }} />
-                  ))
-              }
-            </div>
+
+            {/* Thumbnail strip with navigation */}
+            {project.images.length > 1 && (
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {/* Left arrow */}
+                <button
+                  onClick={() => setThumbOffset((o) => o - 1)}
+                  disabled={!canThumbPrev}
+                  aria-label="Previous thumbnails"
+                  style={navBtn({ opacity: canThumbPrev ? 1 : 0.25, cursor: canThumbPrev ? "pointer" : "default" })}
+                  onMouseEnter={(e) => { if (canThumbPrev) (e.currentTarget as HTMLButtonElement).style.background = "var(--color-border)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-light-gray)"; }}
+                >
+                  ←
+                </button>
+
+                {/* Visible thumbnails */}
+                <div style={{ display: "flex", gap: 8, flex: 1 }}>
+                  {thumbImages.map((src, i) => {
+                    const globalIndex = thumbOffset + i;
+                    return (
+                      <div
+                        key={globalIndex}
+                        onClick={() => { emblaApi?.scrollTo(globalIndex); setSelectedImage(globalIndex); }}
+                        style={{
+                          flex: "1 1 0", height: 40, borderRadius: 4, overflow: "hidden", cursor: "pointer",
+                          border: globalIndex === selectedImage ? "2px solid var(--color-accent)" : "2px solid var(--color-border)",
+                          transition: "border-color 0.15s", position: "relative",
+                        }}
+                      >
+                        <Image src={src} alt={`${project.title} thumbnail ${globalIndex + 1}`} fill sizes="80px" className="modal-thumb-img" />
+                      </div>
+                    );
+                  })}
+                  {/* Fill empty slots when fewer than THUMB_VISIBLE images are visible */}
+                  {thumbImages.length < THUMB_VISIBLE && Array.from({ length: THUMB_VISIBLE - thumbImages.length }).map((_, i) => (
+                    <div key={`empty-${i}`} style={{ flex: "1 1 0", height: 40 }} />
+                  ))}
+                </div>
+
+                {/* Right arrow */}
+                <button
+                  onClick={() => setThumbOffset((o) => o + 1)}
+                  disabled={!canThumbNext}
+                  aria-label="Next thumbnails"
+                  style={navBtn({ opacity: canThumbNext ? 1 : 0.25, cursor: canThumbNext ? "pointer" : "default" })}
+                  onMouseEnter={(e) => { if (canThumbNext) (e.currentTarget as HTMLButtonElement).style.background = "var(--color-border)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "var(--color-light-gray)"; }}
+                >
+                  →
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Details */}
@@ -212,7 +296,6 @@ export default function ProjectModal({
           </div>
         </div>
       </div>
-
     </div>
   );
 }
