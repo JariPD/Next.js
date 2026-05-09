@@ -12,7 +12,10 @@
     "images": [
       "https://picsum.photos/seed/cms-1/800/500",
       "https://picsum.photos/seed/cms-2/800/500",
-      "https://picsum.photos/seed/cms-3/800/500"
+      "https://picsum.photos/seed/cms-3/800/500",
+      "https://picsum.photos/seed/cms-4/800/500",
+      "https://picsum.photos/seed/cms-5/800/500",
+      "https://picsum.photos/seed/cms-6/800/500"
     ],
     "demoUrl": "#",
     "githubUrl": "#",
