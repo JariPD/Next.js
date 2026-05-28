@@ -46,6 +46,7 @@ model Project {
   demo_url       String?        @db.VarChar(500)
   repo_url       String?        @db.VarChar(500)
   year           Int?           @db.SmallInt
+  month          Int?           @db.SmallInt
   sort_order     Int            @default(0)
   created_at     DateTime       @default(now())
   updated_at     DateTime       @updatedAt
