@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function DeletePostButton({ postId }: { postId: number }) {
+export default function DeletePostButton({ postId }: { postId: string }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 

@@ -1,25 +1,47 @@
-import fs from "fs";
-import path from "path";
+import { prisma } from './prisma'
 
 export type User = {
-  id: number;
-  email: string;
-  password: string;
-  role: "user" | "admin";
-  name: string;
-};
-
-function readUsers(): User[] {
-  const filePath = path.join(process.cwd(), "data/users.json");
-  const raw = fs.readFileSync(filePath, "utf-8");
-  return JSON.parse(raw) as User[];
+  id: string
+  email: string
+  password: string
+  role: 'user' | 'admin'
+  name: string
 }
 
-export function getUserByEmail(email: string): User | undefined {
-  return readUsers().find((u) => u.email === email);
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  const user = await prisma.user.findUnique({ where: { email } })
+  if (!user) return undefined
+  return {
+    id: user.user_id,
+    email: user.email,
+    password: user.password,
+    role: user.role as 'user' | 'admin',
+    name: user.name,
+  }
 }
 
-export function displayName(email: string): string {
-  const user = getUserByEmail(email);
-  return user?.name ?? email.split("@")[0];
+export async function createUser(data: {
+  name: string
+  email: string
+  password: string
+}): Promise<User> {
+  const user = await prisma.user.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: 'user',
+    },
+  })
+  return {
+    id: user.user_id,
+    email: user.email,
+    password: user.password,
+    role: user.role as 'user' | 'admin',
+    name: user.name,
+  }
+}
+
+export function displayName(email: string, name?: string): string {
+  return name ?? email.split('@')[0]
 }

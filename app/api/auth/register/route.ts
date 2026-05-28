@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import fs from "fs";
-import path from "path";
-import { getUserByEmail } from "@/lib/users";
-import type { User } from "@/lib/users";
+import { getUserByEmail, createUser } from "@/lib/users";
 
 export async function POST(request: NextRequest) {
   const { name, email, password } = await request.json();
@@ -16,25 +13,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Password must be at least 5 characters." }, { status: 400 });
   }
 
-  if (getUserByEmail(email)) {
+  if (await getUserByEmail(email)) {
     return NextResponse.json({ error: "Email already registered." }, { status: 409 });
   }
 
-  const filePath = path.join(process.cwd(), "data/users.json");
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const users: User[] = JSON.parse(raw);
-
-  const hashed = await bcrypt.hash(password, 10);
-  const newUser: User = {
-    id: Math.max(...users.map((u) => u.id), 0) + 1,
-    email,
-    password: hashed,
-    role: "user",
-    name,
-  };
-
-  users.push(newUser);
-  fs.writeFileSync(filePath, JSON.stringify(users, null, 2), "utf-8");
+  const hashed = await bcrypt.hash(password, 12);
+  await createUser({ name, email, password: hashed });
 
   return NextResponse.json({ success: true }, { status: 201 });
 }

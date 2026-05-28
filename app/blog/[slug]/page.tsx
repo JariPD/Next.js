@@ -15,7 +15,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return {};
   return {
     title: `${post.title} — Jari Dijk`,
@@ -24,7 +24,8 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  return getPublishedPosts().map((post) => ({ slug: post.slug }));
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export default async function BlogPostPage({
@@ -34,7 +35,7 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params;
   const session = await auth();
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post || post.status !== "published") notFound();
 
@@ -42,7 +43,7 @@ export default async function BlogPostPage({
   const isAuthor = session?.user?.email === post.author;
   const showStatus = isAdmin || isAuthor;
 
-  const name = displayName(post.author);
+  const name = displayName(post.author, post.authorName);
   /* First letter of the display name for the avatar circle */
   const avatarInitial = name.charAt(0).toUpperCase();
 

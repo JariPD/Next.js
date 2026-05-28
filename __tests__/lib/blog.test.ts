@@ -1,87 +1,67 @@
 /** @jest-environment node */
-import fs from "fs";
-import { getPublishedPosts } from "@/lib/blog";
 
-jest.mock("fs");
+jest.mock('@/lib/prisma', () => ({
+  prisma: {
+    blogPost: {
+      findMany: jest.fn(),
+    },
+  },
+}))
 
-const mockPosts = [
-  {
-    id: 1,
-    title: "Published Post",
-    slug: "published-post",
-    author: "a@b.com",
-    date: "2024-01-01",
-    status: "published",
-    preview: "",
-    content: "",
-  },
-  {
-    id: 2,
-    title: "Pending Post",
-    slug: "pending-post",
-    author: "a@b.com",
-    date: "2024-01-02",
-    status: "pending",
-    preview: "",
-    content: "",
-  },
-  {
-    id: 3,
-    title: "Rejected Post",
-    slug: "rejected-post",
-    author: "a@b.com",
-    date: "2024-01-03",
-    status: "rejected",
-    preview: "",
-    content: "",
-  },
-  {
-    id: 4,
-    title: "Another Published Post",
-    slug: "another-published-post",
-    author: "b@b.com",
-    date: "2024-01-04",
-    status: "published",
-    preview: "",
-    content: "",
-  },
-];
+import { getPublishedPosts } from '@/lib/blog'
+import { prisma } from '@/lib/prisma'
 
-describe("getPublishedPosts()", () => {
+function makePost(overrides: Partial<{
+  blog_id: string
+  status: string
+}> = {}) {
+  return {
+    blog_id: 'uuid-1',
+    title: 'Test Post',
+    slug: 'test-post',
+    content: 'Content here',
+    status: 'published',
+    created_at: new Date('2024-01-01'),
+    user: { email: 'a@b.com', name: 'Test User' },
+    ...overrides,
+  }
+}
+
+describe('getPublishedPosts()', () => {
   beforeEach(() => {
-    jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPosts));
-  });
+    jest.clearAllMocks()
+  })
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  test('Geeft alleen posts terug met status published', async () => {
+    ;(prisma.blogPost.findMany as jest.Mock).mockResolvedValue([
+      makePost({ blog_id: 'uuid-1' }),
+      makePost({ blog_id: 'uuid-2' }),
+    ])
+    const result = await getPublishedPosts()
+    expect(result.every((p) => p.status === 'published')).toBe(true)
+  })
 
-  test("Geeft alleen posts terug met status 'published'", () => {
-    const result = getPublishedPosts();
+  test('Geeft geen pending of rejected posts terug', async () => {
+    ;(prisma.blogPost.findMany as jest.Mock).mockResolvedValue([
+      makePost({ blog_id: 'uuid-1' }),
+    ])
+    const result = await getPublishedPosts()
+    expect(result.some((p) => p.status === 'pending')).toBe(false)
+    expect(result.some((p) => p.status === 'rejected')).toBe(false)
+  })
 
-    expect(result.every((p) => p.status === "published")).toBe(true);
-  });
+  test('Geeft het juiste aantal gepubliceerde posts terug', async () => {
+    ;(prisma.blogPost.findMany as jest.Mock).mockResolvedValue([
+      makePost({ blog_id: 'uuid-1' }),
+      makePost({ blog_id: 'uuid-2' }),
+    ])
+    const result = await getPublishedPosts()
+    expect(result).toHaveLength(2)
+  })
 
-  test("Geeft geen pending of rejected posts terug", () => {
-    const result = getPublishedPosts();
-
-    expect(result.some((p) => p.status === "pending")).toBe(false);
-    expect(result.some((p) => p.status === "rejected")).toBe(false);
-  });
-
-  test("Geeft het juiste aantal gepubliceerde posts terug", () => {
-    const result = getPublishedPosts();
-
-    expect(result).toHaveLength(2);
-  });
-
-  test("Geeft lege array terug als er geen gepubliceerde posts zijn", () => {
-    jest.spyOn(fs, "readFileSync").mockReturnValue(
-      JSON.stringify([mockPosts[1], mockPosts[2]])
-    );
-
-    const result = getPublishedPosts();
-
-    expect(result).toHaveLength(0);
-  });
-});
+  test('Geeft lege array terug als er geen gepubliceerde posts zijn', async () => {
+    ;(prisma.blogPost.findMany as jest.Mock).mockResolvedValue([])
+    const result = await getPublishedPosts()
+    expect(result).toHaveLength(0)
+  })
+})

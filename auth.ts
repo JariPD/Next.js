@@ -9,7 +9,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        const user = getUserByEmail(credentials.email as string);
+        const user = await getUserByEmail(credentials.email as string);
         if (!user) return null;
         const ok = await bcrypt.compare(
           credentials.password as string,
@@ -17,7 +17,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
         if (!ok) return null;
         return {
-          id: String(user.id),
+          id: user.id,
           email: user.email,
           name: user.name,
           role: user.role,

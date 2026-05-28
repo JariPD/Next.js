@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { updatePostStatus } from "@/lib/blog";
+import type { Status } from "@/lib/blog";
 
 export async function PATCH(
   request: NextRequest,
@@ -18,7 +19,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid status." }, { status: 400 });
   }
 
-  const updated = updatePostStatus(Number(id), status);
+  const updated = await updatePostStatus(id, status as Status);
   if (!updated) {
     return NextResponse.json({ error: "Post not found." }, { status: 404 });
   }
