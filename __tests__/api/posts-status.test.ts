@@ -25,7 +25,7 @@ describe("app/api/blog/posts/[id]/status — PATCH", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (auth as jest.Mock).mockResolvedValue({ user: { role: "admin" } });
-    (updatePostStatus as jest.Mock).mockReturnValue(true);
+    (updatePostStatus as jest.Mock).mockResolvedValue(true);
   });
 
   test("Status wordt correct bijgewerkt naar 'published'", async () => {
@@ -36,7 +36,7 @@ describe("app/api/blog/posts/[id]/status — PATCH", () => {
 
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
-    expect(updatePostStatus).toHaveBeenCalledWith(1, "published");
+    expect(updatePostStatus).toHaveBeenCalledWith("1", "published");
   });
 
   test("Status wordt correct bijgewerkt naar 'rejected'", async () => {
@@ -47,7 +47,7 @@ describe("app/api/blog/posts/[id]/status — PATCH", () => {
 
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
-    expect(updatePostStatus).toHaveBeenCalledWith(2, "rejected");
+    expect(updatePostStatus).toHaveBeenCalledWith("2", "rejected");
   });
 
   test("Geeft 403 terug als gebruiker geen admin is", async () => {
@@ -69,7 +69,7 @@ describe("app/api/blog/posts/[id]/status — PATCH", () => {
   });
 
   test("Geeft 404 terug als post niet bestaat", async () => {
-    (updatePostStatus as jest.Mock).mockReturnValue(false);
+    (updatePostStatus as jest.Mock).mockResolvedValue(false);
 
     const res = await PATCH(makeRequest({ status: "published" }), {
       params: Promise.resolve({ id: "999" }),

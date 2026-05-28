@@ -1,38 +1,86 @@
 /** @jest-environment node */
-import { getAllProjects } from "@/lib/projects";
-import projectsData from "@/data/projects.json";
 
-describe("getAllProjects()", () => {
-  test("Geeft alle projecten terug uit projects.json", () => {
-    const result = getAllProjects();
+jest.mock('@/lib/prisma', () => ({
+  prisma: {
+    project: {
+      findMany: jest.fn(),
+    },
+  },
+}))
 
-    expect(result).toHaveLength(projectsData.length);
-  });
+import { getAllProjects } from '@/lib/projects'
+import { prisma } from '@/lib/prisma'
 
-  test("Geeft een array van projecten terug", () => {
-    const result = getAllProjects();
+function makeProject(overrides: Partial<{ project_id: string; title: string }> = {}) {
+  return {
+    project_id: 'uuid-1',
+    title: 'Test Project',
+    slug: 'test-project',
+    description: 'A test project',
+    technologies: ['TypeScript', 'React'],
+    problem: null,
+    approach: null,
+    role: null,
+    thumbnail_url: null,
+    demo_url: null,
+    repo_url: null,
+    year: 2024,
+    sort_order: 1,
+    project_images: [],
+    ...overrides,
+  }
+}
 
-    expect(Array.isArray(result)).toBe(true);
-  });
+describe('getAllProjects()', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
 
-  test("Elk project bevat de verwachte velden", () => {
-    const result = getAllProjects();
+  test('Geeft alle projecten terug', async () => {
+    const mockProjects = [
+      makeProject({ project_id: 'uuid-1', title: 'Project A' }),
+      makeProject({ project_id: 'uuid-2', title: 'Project B' }),
+    ]
+    ;(prisma.project.findMany as jest.Mock).mockResolvedValue(mockProjects)
+
+    const result = await getAllProjects()
+
+    expect(result).toHaveLength(2)
+  })
+
+  test('Geeft een array van projecten terug', async () => {
+    ;(prisma.project.findMany as jest.Mock).mockResolvedValue([])
+
+    const result = await getAllProjects()
+
+    expect(Array.isArray(result)).toBe(true)
+  })
+
+  test('Elk project bevat de verwachte velden', async () => {
+    ;(prisma.project.findMany as jest.Mock).mockResolvedValue([
+      makeProject({ project_id: 'uuid-1', title: 'Project A' }),
+    ])
+
+    const result = await getAllProjects()
 
     result.forEach((project) => {
-      expect(project).toHaveProperty("id");
-      expect(project).toHaveProperty("title");
-      expect(project).toHaveProperty("shortDescription");
-      expect(project).toHaveProperty("tech");
-      expect(project).toHaveProperty("year");
-    });
-  });
+      expect(project).toHaveProperty('id')
+      expect(project).toHaveProperty('title')
+      expect(project).toHaveProperty('shortDescription')
+      expect(project).toHaveProperty('tech')
+      expect(project).toHaveProperty('year')
+    })
+  })
 
-  test("Geeft referentie naar dezelfde data als projects.json", () => {
-    const result = getAllProjects();
+  test('Geeft referentie naar de correcte gemapte data', async () => {
+    ;(prisma.project.findMany as jest.Mock).mockResolvedValue([
+      makeProject({ project_id: 'uuid-1', title: 'Project A' }),
+      makeProject({ project_id: 'uuid-2', title: 'Project B' }),
+    ])
 
-    expect(result[0].title).toBe(projectsData[0].title);
-    expect(result[result.length - 1].id).toBe(
-      projectsData[projectsData.length - 1].id
-    );
-  });
-});
+    const result = await getAllProjects()
+
+    expect(result[0].title).toBe('Project A')
+    expect(result[result.length - 1].id).toBe('uuid-2')
+  })
+})

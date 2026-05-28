@@ -9,7 +9,7 @@ export default async function AdminPage() {
   const session = await auth();
   if (session?.user?.role !== "admin") redirect("/");
 
-  const posts = getAllPosts();
+  const posts = await getAllPosts();
   const published = posts.filter((p) => p.status === "published").length;
   const pending = posts.filter((p) => p.status === "pending").length;
   const rejected = posts.filter((p) => p.status === "rejected").length;

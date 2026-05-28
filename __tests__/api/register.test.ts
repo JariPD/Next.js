@@ -3,19 +3,15 @@ import { NextRequest } from "next/server";
 
 jest.mock("@/lib/users", () => ({
   getUserByEmail: jest.fn(),
-}));
-
-jest.mock("fs", () => ({
-  readFileSync: jest.fn(() => JSON.stringify([])),
-  writeFileSync: jest.fn(),
+  createUser: jest.fn(),
 }));
 
 jest.mock("bcryptjs", () => ({
   hash: jest.fn(() => Promise.resolve("hashed-password")),
 }));
 
-import { getUserByEmail } from "@/lib/users";
-import {POST} from "@/app/api/auth/register/route";
+import { getUserByEmail, createUser } from "@/lib/users";
+import { POST } from "@/app/api/auth/register/route";
 
 function makeRequest(body: Record<string, string>) {
   return new NextRequest("http://localhost/api/auth/register", {
@@ -28,7 +24,14 @@ function makeRequest(body: Record<string, string>) {
 describe("app/api/auth/register — validatie", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (getUserByEmail as jest.Mock).mockReturnValue(undefined);
+    (getUserByEmail as jest.Mock).mockResolvedValue(undefined);
+    (createUser as jest.Mock).mockResolvedValue({
+      id: "uuid-1",
+      email: "test@test.com",
+      name: "Test",
+      role: "user",
+      password: "hashed-password",
+    });
   });
 
   test("Foutmelding bij ontbrekend e-mailadres", async () => {
