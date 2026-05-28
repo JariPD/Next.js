@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.email) redirect("/login");
 
-  const posts = getPostsByAuthor(session.user.email);
+  const posts = await getPostsByAuthor(session.user.email);
   const published = posts.filter((p) => p.status === "published").length;
   const pending = posts.filter((p) => p.status === "pending").length;
   const rejected = posts.filter((p) => p.status === "rejected").length;

@@ -12,9 +12,9 @@ import ContactForm from "@/components/ContactForm";
 import RevealInit from "@/components/RevealInit";
 import ContactLinks from "@/components/ContactLinks";
 
-export default function Home() {
-  const projects = getAllProjects();
-  const publishedPosts = getPublishedPosts();
+export default async function Home() {
+  const projects = await getAllProjects();
+  const publishedPosts = await getPublishedPosts();
 
   return (
     <main>

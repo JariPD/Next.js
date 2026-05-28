@@ -12,7 +12,7 @@ export async function DELETE(
   }
 
   const { id } = await params;
-  const post = getPostById(Number(id));
+  const post = await getPostById(id);
   if (!post) {
     return NextResponse.json({ error: "Post not found." }, { status: 404 });
   }
@@ -23,6 +23,6 @@ export async function DELETE(
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
-  deletePost(Number(id));
+  await deletePost(id);
   return NextResponse.json({ success: true });
 }

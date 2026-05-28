@@ -9,7 +9,7 @@ export default function AdminActions({
   postId,
   currentStatus,
 }: {
-  postId: number;
+  postId: string;
   currentStatus: Status;
 }) {
   const [loading, setLoading] = useState(false);

@@ -1,69 +1,120 @@
-import fs from "fs";
-import path from "path";
+import { prisma } from './prisma'
 
-export type Status = "published" | "pending" | "rejected";
+export type Status = 'published' | 'pending' | 'rejected'
 
 export type BlogPost = {
-  id: number;
-  title: string;
-  slug: string;
-  author: string;
-  date: string;
-  status: Status;
-  preview: string;
-  content: string;
-};
-
-function readPosts(): BlogPost[] {
-  const filePath = path.join(process.cwd(), "data/blog.json");
-  const raw = fs.readFileSync(filePath, "utf-8");
-  return JSON.parse(raw) as BlogPost[];
+  id: string
+  title: string
+  slug: string
+  author: string
+  authorName: string
+  date: string
+  status: Status
+  preview: string
+  content: string
 }
 
-function writePosts(posts: BlogPost[]): void {
-  const filePath = path.join(process.cwd(), "data/blog.json");
-  fs.writeFileSync(filePath, JSON.stringify(posts, null, 2), "utf-8");
+type PrismaPost = {
+  blog_id: string
+  title: string
+  slug: string
+  content: string
+  status: string
+  created_at: Date
+  user: { email: string; name: string }
 }
 
-export function getAllPosts(): BlogPost[] {
-  return readPosts();
+function mapPost(post: PrismaPost): BlogPost {
+  return {
+    id: post.blog_id,
+    title: post.title,
+    slug: post.slug,
+    author: post.user.email,
+    authorName: post.user.name,
+    date: post.created_at.toISOString().split('T')[0],
+    status: post.status as Status,
+    preview: post.content.slice(0, 200),
+    content: post.content,
+  }
 }
 
-export function getPublishedPosts(): BlogPost[] {
-  return readPosts().filter((p) => p.status === "published");
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const posts = await prisma.blogPost.findMany({
+    include: { user: true },
+    orderBy: { created_at: 'desc' },
+  })
+  return posts.map(mapPost)
 }
 
-export function getPostBySlug(slug: string): BlogPost | undefined {
-  return readPosts().find((p) => p.slug === slug);
+export async function getPublishedPosts(): Promise<BlogPost[]> {
+  const posts = await prisma.blogPost.findMany({
+    where: { status: 'published' },
+    include: { user: true },
+    orderBy: { created_at: 'desc' },
+  })
+  return posts.map(mapPost)
 }
 
-export function getPostById(id: number): BlogPost | undefined {
-  return readPosts().find((p) => p.id === id);
+export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  const post = await prisma.blogPost.findUnique({
+    where: { slug },
+    include: { user: true },
+  })
+  return post ? mapPost(post) : undefined
 }
 
-export function getPostsByAuthor(email: string): BlogPost[] {
-  return readPosts().filter((p) => p.author === email);
+export async function getPostById(id: string): Promise<BlogPost | undefined> {
+  const post = await prisma.blogPost.findUnique({
+    where: { blog_id: id },
+    include: { user: true },
+  })
+  return post ? mapPost(post) : undefined
 }
 
-export function appendPost(post: BlogPost): void {
-  const posts = readPosts();
-  posts.push(post);
-  writePosts(posts);
+export async function getPostsByAuthor(email: string): Promise<BlogPost[]> {
+  const posts = await prisma.blogPost.findMany({
+    where: { user: { email } },
+    include: { user: true },
+    orderBy: { created_at: 'desc' },
+  })
+  return posts.map(mapPost)
 }
 
-export function updatePostStatus(id: number, status: Status): boolean {
-  const posts = readPosts();
-  const index = posts.findIndex((p) => p.id === id);
-  if (index === -1) return false;
-  posts[index].status = status;
-  writePosts(posts);
-  return true;
+export async function createPost(data: {
+  userEmail: string
+  title: string
+  slug: string
+  content: string
+}): Promise<BlogPost> {
+  const user = await prisma.user.findUnique({ where: { email: data.userEmail } })
+  if (!user) throw new Error('User not found')
+  const post = await prisma.blogPost.create({
+    data: {
+      user_id: user.user_id,
+      title: data.title,
+      slug: data.slug,
+      content: data.content,
+      status: 'pending',
+    },
+    include: { user: true },
+  })
+  return mapPost(post)
 }
 
-export function deletePost(id: number): boolean {
-  const posts = readPosts();
-  const filtered = posts.filter((p) => p.id !== id);
-  if (filtered.length === posts.length) return false;
-  writePosts(filtered);
-  return true;
+export async function updatePostStatus(id: string, status: Status): Promise<boolean> {
+  try {
+    await prisma.blogPost.update({ where: { blog_id: id }, data: { status } })
+    return true
+  } catch {
+    return false
+  }
+}
+
+export async function deletePost(id: string): Promise<boolean> {
+  try {
+    await prisma.blogPost.delete({ where: { blog_id: id } })
+    return true
+  } catch {
+    return false
+  }
 }
