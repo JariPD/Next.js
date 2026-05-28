@@ -169,7 +169,7 @@ export default function ProjectModal({
               ref={emblaRef}
               style={{
                 width: "100%", aspectRatio: "16/10", borderRadius: 6, overflow: "hidden",
-                background: `linear-gradient(135deg, ${project.color}22 0%, ${project.color}44 100%)`,
+                background: "linear-gradient(135deg, var(--color-light-gray) 0%, var(--color-border) 100%)",
               }}
             >
               {project.images.length > 0 ? (
@@ -189,7 +189,7 @@ export default function ProjectModal({
                 </div>
               ) : (
                 <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 48, fontWeight: 700, color: project.color, opacity: 0.5, letterSpacing: -2 }}>
+                  <span style={{ fontSize: 48, fontWeight: 700, color: "var(--color-gray-text)", opacity: 0.5, letterSpacing: -2 }}>
                     {project.title.split(" ").map((w) => w[0]).join("").slice(0, 3)}
                   </span>
                 </div>
@@ -288,7 +288,7 @@ export default function ProjectModal({
                 </a>
               )}
               {hasGithub && (
-                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
+                <a href={project.githubUrl ?? undefined} target="_blank" rel="noopener noreferrer" className="btn-secondary">
                   GitHub
                 </a>
               )}
