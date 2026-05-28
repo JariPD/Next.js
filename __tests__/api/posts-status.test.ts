@@ -77,4 +77,44 @@ describe("app/api/blog/posts/[id]/status — PATCH", () => {
 
     expect(res.status).toBe(404);
   });
+
+  test("Status wordt correct bijgewerkt naar 'pending'", async () => {
+    const res = await PATCH(makeRequest({ status: "pending" }), {
+      params: Promise.resolve({ id: "1" }),
+    });
+    const data = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(data.success).toBe(true);
+    expect(updatePostStatus).toHaveBeenCalledWith("1", "pending");
+  });
+
+  test("Geeft 403 terug als er geen sessie is", async () => {
+    (auth as jest.Mock).mockResolvedValue(null);
+
+    const res = await PATCH(makeRequest({ status: "published" }), {
+      params: Promise.resolve({ id: "1" }),
+    });
+
+    expect(res.status).toBe(403);
+    expect(updatePostStatus).not.toHaveBeenCalled();
+  });
+
+  test("Roept updatePostStatus niet aan bij 403", async () => {
+    (auth as jest.Mock).mockResolvedValue({ user: { role: "user" } });
+
+    await PATCH(makeRequest({ status: "published" }), {
+      params: Promise.resolve({ id: "1" }),
+    });
+
+    expect(updatePostStatus).not.toHaveBeenCalled();
+  });
+
+  test("Roept updatePostStatus niet aan bij 400", async () => {
+    await PATCH(makeRequest({ status: "archived" }), {
+      params: Promise.resolve({ id: "1" }),
+    });
+
+    expect(updatePostStatus).not.toHaveBeenCalled();
+  });
 });
