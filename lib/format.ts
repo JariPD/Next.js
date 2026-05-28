@@ -8,8 +8,10 @@ export function formatDate(dateStr: string): string {
   return `${day} ${MONTHS[month - 1]} ${year}`;
 }
 
-/** Formats a project's year/month fields as "Month YYYY" (e.g. "January 2026") */
-export function formatProjectDate(year: number, month: number): string {
+/** Formats a project's year/month fields as "Month YYYY", "YYYY", or "" */
+export function formatProjectDate(year: number | null, month: number | null): string {
+  if (!year) return "";
+  if (!month) return String(year);
   return `${MONTHS[month - 1]} ${year}`;
 }
 

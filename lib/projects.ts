@@ -1,4 +1,7 @@
+import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
+
+type PrismaProject = Prisma.ProjectGetPayload<{ include: { project_images: true } }>
 
 export type Project = {
   id: string
@@ -14,6 +17,7 @@ export type Project = {
   demoUrl: string | null
   githubUrl: string | null
   year: number | null
+  month: number | null
   sort_order: number
 }
 
@@ -29,26 +33,11 @@ export type ProjectInput = {
   demo_url?: string
   repo_url?: string
   year?: number
+  month?: number
   sort_order?: number
   images?: { url: string; alt_text?: string; sort_order?: number }[]
 }
 
-type PrismaProject = {
-  project_id: string
-  title: string
-  slug: string
-  description: string
-  technologies: string[]
-  problem: string | null
-  approach: string | null
-  role: string | null
-  thumbnail_url: string | null
-  demo_url: string | null
-  repo_url: string | null
-  year: number | null
-  sort_order: number
-  project_images: { url: string; sort_order: number }[]
-}
 
 function mapProject(p: PrismaProject): Project {
   return {
@@ -61,12 +50,13 @@ function mapProject(p: PrismaProject): Project {
     approach: p.approach,
     role: p.role,
     thumbnail: p.thumbnail_url,
-    images: p.project_images
+    images: [...p.project_images]
       .sort((a, b) => a.sort_order - b.sort_order)
       .map((img) => img.url),
     demoUrl: p.demo_url,
     githubUrl: p.repo_url,
     year: p.year,
+    month: p.month,
     sort_order: p.sort_order,
   }
 }
