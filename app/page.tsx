@@ -13,8 +13,10 @@ import RevealInit from "@/components/RevealInit";
 import ContactLinks from "@/components/ContactLinks";
 
 export default async function Home() {
-  const projects = await getAllProjects();
-  const publishedPosts = await getPublishedPosts();
+  const [projects, publishedPosts] = await Promise.all([
+    getAllProjects(),
+    getPublishedPosts(),
+  ]);
 
   return (
     <main>

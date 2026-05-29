@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache'
 import { prisma } from './prisma'
 
 export type Status = 'published' | 'pending' | 'rejected'
@@ -46,14 +47,18 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   return posts.map(mapPost)
 }
 
-export async function getPublishedPosts(): Promise<BlogPost[]> {
-  const posts = await prisma.blogPost.findMany({
-    where: { status: 'published' },
-    include: { user: true },
-    orderBy: { created_at: 'desc' },
-  })
-  return posts.map(mapPost)
-}
+export const getPublishedPosts = unstable_cache(
+  async (): Promise<BlogPost[]> => {
+    const posts = await prisma.blogPost.findMany({
+      where: { status: 'published' },
+      include: { user: true },
+      orderBy: { created_at: 'desc' },
+    })
+    return posts.map(mapPost)
+  },
+  ['published-posts'],
+  { revalidate: 60 }
+)
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   const post = await prisma.blogPost.findUnique({

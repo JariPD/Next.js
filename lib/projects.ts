@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache'
 import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
 
@@ -61,13 +62,17 @@ function mapProject(p: PrismaProject): Project {
   }
 }
 
-export async function getAllProjects(): Promise<Project[]> {
-  const projects = await prisma.project.findMany({
-    include: { project_images: true },
-    orderBy: { sort_order: 'asc' },
-  })
-  return projects.map(mapProject)
-}
+export const getAllProjects = unstable_cache(
+  async (): Promise<Project[]> => {
+    const projects = await prisma.project.findMany({
+      include: { project_images: true },
+      orderBy: { sort_order: 'asc' },
+    })
+    return projects.map(mapProject)
+  },
+  ['projects'],
+  { revalidate: 60 }
+)
 
 export async function getProjectById(id: string): Promise<Project | undefined> {
   const project = await prisma.project.findUnique({
