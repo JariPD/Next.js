@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache'
+import {revalidateTag, unstable_cache} from 'next/cache'
 import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
 
@@ -98,6 +98,7 @@ export async function createProject(data: ProjectInput): Promise<Project> {
     },
     include: { project_images: true },
   })
+  revalidateTag('projects', 'max')
   return mapProject(project)
 }
 
@@ -117,6 +118,7 @@ export async function updateProject(
       },
       include: { project_images: true },
     })
+    revalidateTag('projects', 'max')
     return mapProject(project)
   } catch {
     return null
@@ -126,6 +128,7 @@ export async function updateProject(
 export async function deleteProject(id: string): Promise<boolean> {
   try {
     await prisma.project.delete({ where: { project_id: id } })
+    revalidateTag('projects', 'max')
     return true
   } catch {
     return false
