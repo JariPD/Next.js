@@ -1,5 +1,5 @@
 import {revalidateTag, unstable_cache} from 'next/cache'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@/prisma/generated/prisma/client'
 import { prisma } from './prisma'
 
 type PrismaProject = Prisma.ProjectGetPayload<{ include: { project_images: true } }>
@@ -120,6 +120,7 @@ export async function updateProject(
     })
     revalidateTag('projects', 'max')
     return mapProject(project)
+    
   } catch {
     return null
   }
