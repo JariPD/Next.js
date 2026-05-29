@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache'
+import { revalidateTag, unstable_cache } from 'next/cache'
 import { prisma } from './prisma'
 
 export type Status = 'published' | 'pending' | 'rejected'
@@ -100,15 +100,17 @@ export async function createPost(data: {
       slug: data.slug,
       content: data.content,
       status: 'pending',
-    },
+    },  
     include: { user: true },
   })
+  revalidateTag('published-posts', 'max')
   return mapPost(post)
 }
 
 export async function updatePostStatus(id: string, status: Status): Promise<boolean> {
   try {
     await prisma.blogPost.update({ where: { blog_id: id }, data: { status } })
+    revalidateTag('published-posts', 'max')
     return true
   } catch {
     return false
@@ -118,6 +120,7 @@ export async function updatePostStatus(id: string, status: Status): Promise<bool
 export async function deletePost(id: string): Promise<boolean> {
   try {
     await prisma.blogPost.delete({ where: { blog_id: id } })
+    revalidateTag('published-posts', 'max')
     return true
   } catch {
     return false
