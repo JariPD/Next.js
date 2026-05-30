@@ -76,7 +76,7 @@ export default function Header() {
         {/* Desktop nav */}
         <nav className="desktop-nav">
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.href}
               href={link.href}
               style={{
@@ -90,7 +90,7 @@ export default function Header() {
               onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-text)")}
             >
               {link.label}
-            </Link>
+            </a>
           ))}
         </nav>
 
@@ -219,7 +219,7 @@ export default function Header() {
           }}
         >
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
@@ -231,7 +231,7 @@ export default function Header() {
               }}
             >
               {link.label}
-            </Link>
+            </a>
           ))}
         </div>
       )}
