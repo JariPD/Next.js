@@ -40,8 +40,8 @@ export default async function Home() {
                 ))}
               </div>
               <div className="hero-ctas">
-                <Link href="#projects" className="btn-primary">View projects</Link>
-                <Link href="#contact" className="btn-secondary">Get in touch</Link>
+                <Button href="/#projects">View projects</Button>
+                <Button variant="secondary" href="/#contact">Get in touch</Button>
               </div>
             </div>
             <div className="hero-photo">
