@@ -34,6 +34,14 @@ export default function Button({
   const cls = [variantClass[variant], className].filter(Boolean).join(" ");
 
   if (href) {
+    const isAnchor = href.startsWith("#") || href.startsWith("/#");
+    if (isAnchor) {
+      return (
+        <a href={href} className={cls} style={style}>
+          {children}
+        </a>
+      );
+    }
     return (
       <Link href={href} className={cls} style={style}>
         {children}
