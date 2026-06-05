@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/auth-guards";
 import { getAllProjects, createProject } from "@/lib/projects";
 
 export async function GET() {
@@ -8,10 +8,8 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-  if (session?.user?.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
-  }
+  const { error } = await requireAdmin();
+  if (error) return error;
 
   const body = await request.json();
   const { title, description } = body;
