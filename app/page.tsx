@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import profile from "@/public/Profile.jpg";
 import profileHover from "@/public/ProfileHover.jpg";

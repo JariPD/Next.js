@@ -41,8 +41,10 @@ export default function ProjectModal({
     return () => { emblaApi.off("select", onSelect); emblaApi.off("reInit", onSelect); };
   }, [emblaApi]);
 
-  // Reset carousel and thumb strip when switching projects
+  // Reset carousel and thumb strip when switching projects.
+  // Deliberate setState-on-prop-change; disable the strict effect rule here.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedImage(0);
     setThumbOffset(0);
     emblaApi?.scrollTo(0, true);

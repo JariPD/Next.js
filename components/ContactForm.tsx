@@ -78,7 +78,7 @@ export default function ContactForm() {
         borderRadius: 8, padding: 32, textAlign: "center", color: "var(--color-success)",
       }}>
         <h3 style={{ color: "var(--color-success)", marginBottom: 8 }}>Message sent!</h3>
-        <p>Thanks for reaching out. I'll get back to you as soon as possible.</p>
+        <p>Thanks for reaching out. I&apos;ll get back to you as soon as possible.</p>
       </div>
     );
   }
