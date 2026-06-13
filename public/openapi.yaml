@@ -231,86 +231,9 @@ paths:
           $ref: "#/components/responses/NotFound"
 
   # ─────────────────────────────────────────
-  # BLOG — USER DASHBOARD
-  # ─────────────────────────────────────────
-
-  /dashboard/posts:
-    get:
-      tags: [Blog]
-      summary: Retrieve the current user's own blog posts
-      description: |
-        Returns all posts submitted by the authenticated user, including all statuses
-        (pending, published, rejected). Used to display the user dashboard. (US13, US14)
-      security:
-        - sessionAuth: []
-      responses:
-        "200":
-          description: List of the user's own posts
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/BlogPost"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-
-  # ─────────────────────────────────────────
   # ADMIN
   # ─────────────────────────────────────────
 
-  /admin/posts:
-    get:
-      tags: [Admin]
-      summary: Retrieve all blog posts for moderation
-      description: |
-        Admin only. Returns all posts across all statuses (pending, published, rejected),
-        sorted by date descending. Optionally filter by status. Used to populate the admin panel. (F14, US14)
-      security:
-        - sessionAuth: []
-      parameters:
-        - name: status
-          in: query
-          required: false
-          description: Filter posts by status
-          schema:
-            type: string
-            enum: [pending, published, rejected]
-      responses:
-        "200":
-          description: List of all posts
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/BlogPost"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-
-  /admin/posts/{id}:
-    delete:
-      tags: [Admin]
-      summary: Delete any blog post (admin only)
-      description: |
-        Admin only. Removes any post from the database regardless of status.
-        Used to remove inappropriate or unwanted content. (US18)
-      security:
-        - sessionAuth: []
-      parameters:
-        - $ref: "#/components/parameters/PostId"
-      responses:
-        "200":
-          description: Post deleted successfully
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          $ref: "#/components/responses/NotFound"
-  
   /admin/users/{id}/posts:
     delete:
       tags: [ Admin ]
